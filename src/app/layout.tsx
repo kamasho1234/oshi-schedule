@@ -11,9 +11,26 @@ import { AuthInitializer } from "@/components/layout/AuthInitializer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "推し活スケジュール帳",
-  description: "推しのイベント・グッズ・出費をまとめて管理",
+  title: {
+    default: "推し活スケジュール帳 | my-oshi.com",
+    template: "%s | 推し活スケジュール帳",
+  },
+  description: "推しのスケジュール・グッズ・出費をまとめて管理。推し活のすべてをあなた色に。",
+  metadataBase: new URL("https://my-oshi.com"),
   manifest: "/manifest.json",
+  openGraph: {
+    title: "推し活スケジュール帳",
+    description: "推しのスケジュール・グッズ・出費をまとめて管理。推し活のすべてをあなた色に。",
+    url: "https://my-oshi.com",
+    siteName: "推し活スケジュール帳",
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "推し活スケジュール帳",
+    description: "推しのスケジュール・グッズ・出費をまとめて管理",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
