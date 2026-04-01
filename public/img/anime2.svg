@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg2" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0d2137"/>
+      <stop offset="100%" stop-color="#020a15"/>
+    </radialGradient>
+    <radialGradient id="eyeG2" cx="40%" cy="35%">
+      <stop offset="0%" stop-color="#4fc3f7"/>
+      <stop offset="100%" stop-color="#0288d1"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg2)"/>
+  <circle cx="80" cy="50" r="1.5" fill="white" opacity=".5"/><circle cx="300" cy="30" r="2" fill="#4fc3f7" opacity=".3"/>
+  <circle cx="350" cy="350" r="1.5" fill="white" opacity=".4"/><circle cx="40" cy="300" r="2" fill="#4fc3f7" opacity=".2"/>
+  <!-- Hair -->
+  <ellipse cx="200" cy="150" rx="80" ry="85" fill="#4fc3f7"/>
+  <ellipse cx="130" cy="195" rx="20" ry="75" fill="#4fc3f7" transform="rotate(-10 130 195)"/>
+  <ellipse cx="270" cy="195" rx="20" ry="75" fill="#4fc3f7" transform="rotate(10 270 195)"/>
+  <rect x="160" y="80" width="80" height="30" rx="10" fill="#4fc3f7"/>
+  <!-- Face -->
+  <ellipse cx="200" cy="175" rx="50" ry="55" fill="#fce4d6"/>
+  <!-- Eyes -->
+  <ellipse cx="178" cy="168" rx="15" ry="19" fill="url(#eyeG2)"/>
+  <ellipse cx="175" cy="162" rx="5" ry="7" fill="white"/>
+  <ellipse cx="178" cy="172" rx="7" ry="9" fill="#001830"/>
+  <circle cx="175" cy="168" r="3.5" fill="white"/>
+  <ellipse cx="222" cy="168" rx="15" ry="19" fill="url(#eyeG2)"/>
+  <ellipse cx="225" cy="162" rx="5" ry="7" fill="white"/>
+  <ellipse cx="222" cy="172" rx="7" ry="9" fill="#001830"/>
+  <circle cx="225" cy="168" r="3.5" fill="white"/>
+  <!-- Blush -->
+  <ellipse cx="165" cy="190" rx="10" ry="5" fill="#b3d9ff" opacity=".4"/>
+  <ellipse cx="235" cy="190" rx="10" ry="5" fill="#b3d9ff" opacity=".4"/>
+  <!-- Mouth -->
+  <line x1="193" y1="198" x2="207" y2="198" stroke="#c88" stroke-width="2" stroke-linecap="round"/>
+  <!-- Headphones -->
+  <path d="M148 155 Q148 115 200 110 Q252 115 252 155" fill="none" stroke="#333" stroke-width="6"/>
+  <rect x="138" y="148" width="16" height="25" rx="8" fill="#333"/><rect x="246" y="148" width="16" height="25" rx="8" fill="#333"/>
+  <rect x="140" y="150" width="12" height="20" rx="6" fill="#4fc3f7" opacity=".5"/>
+  <rect x="248" y="150" width="12" height="20" rx="6" fill="#4fc3f7" opacity=".5"/>
+  <!-- Outfit -->
+  <path d="M155 235 Q138 310 160 370 L240 370 Q262 310 245 235 Z" fill="#1565c0"/>
+  <path d="M192 240 L208 240 L212 330 L188 330 Z" fill="#e3f2fd" opacity=".5"/>
+  <circle cx="200" cy="250" r="5" fill="#4fc3f7" opacity=".6"/>
+  <!-- Snowflakes -->
+  <g fill="white" opacity=".3">
+    <circle cx="80" cy="120" r="3"/><circle cx="320" cy="90" r="2"/><circle cx="100" cy="320" r="2.5"/>
+    <circle cx="300" cy="340" r="2"/><circle cx="60" cy="220" r="1.5"/><circle cx="340" cy="220" r="2"/>
+  </g>
+  <text x="200" y="390" text-anchor="middle" fill="white" opacity=".8" font-family="sans-serif" font-size="14" font-weight="bold">アイスブルー</text>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg5" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#0a2d0a"/>
+      <stop offset="100%" stop-color="#001500"/>
+    </radialGradient>
+    <radialGradient id="eyeG5" cx="40%" cy="35%">
+      <stop offset="0%" stop-color="#66bb6a"/>
+      <stop offset="100%" stop-color="#2e7d32"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg5)"/>
+  <!-- Leaf particles -->
+  <ellipse cx="70" cy="100" rx="6" ry="3" fill="#66bb6a" opacity=".2" transform="rotate(30 70 100)"/>
+  <ellipse cx="330" cy="80" rx="5" ry="2.5" fill="#66bb6a" opacity=".15" transform="rotate(-20 330 80)"/>
+  <ellipse cx="50" cy="300" rx="4" ry="2" fill="#81c784" opacity=".2" transform="rotate(45 50 300)"/>
+  <ellipse cx="350" cy="320" rx="5" ry="2.5" fill="#81c784" opacity=".15" transform="rotate(-35 350 320)"/>
+  <!-- Hair -->
+  <ellipse cx="200" cy="150" rx="78" ry="85" fill="#66bb6a"/>
+  <ellipse cx="132" cy="195" rx="22" ry="70" fill="#66bb6a" transform="rotate(-6 132 195)"/>
+  <ellipse cx="268" cy="195" rx="22" ry="70" fill="#66bb6a" transform="rotate(6 268 195)"/>
+  <!-- Flower in hair -->
+  <g transform="translate(250,115)">
+    <circle cx="0" cy="0" r="8" fill="#ffee58"/>
+    <circle cx="10" cy="-3" r="6" fill="#fff59d" opacity=".8"/>
+    <circle cx="-8" cy="-5" r="5" fill="#fff59d" opacity=".7"/>
+    <circle cx="5" cy="8" r="5" fill="#fff59d" opacity=".7"/>
+    <circle cx="0" cy="0" r="4" fill="#ff8f00"/>
+  </g>
+  <!-- Face -->
+  <ellipse cx="200" cy="175" rx="50" ry="55" fill="#fce4d6"/>
+  <!-- Eyes -->
+  <ellipse cx="178" cy="168" rx="15" ry="19" fill="url(#eyeG5)"/>
+  <ellipse cx="175" cy="162" rx="5" ry="7" fill="white"/>
+  <ellipse cx="178" cy="172" rx="7" ry="9" fill="#002000"/>
+  <circle cx="175" cy="168" r="3.5" fill="white"/>
+  <ellipse cx="222" cy="168" rx="15" ry="19" fill="url(#eyeG5)"/>
+  <ellipse cx="225" cy="162" rx="5" ry="7" fill="white"/>
+  <ellipse cx="222" cy="172" rx="7" ry="9" fill="#002000"/>
+  <circle cx="225" cy="168" r="3.5" fill="white"/>
+  <!-- Blush -->
+  <ellipse cx="165" cy="190" rx="10" ry="5" fill="#c8e6c9" opacity=".4"/>
+  <ellipse cx="235" cy="190" rx="10" ry="5" fill="#c8e6c9" opacity=".4"/>
+  <!-- Mouth - gentle smile -->
+  <path d="M193 197 Q200 204 207 197" fill="none" stroke="#a77" stroke-width="2" stroke-linecap="round"/>
+  <!-- Outfit -->
+  <path d="M155 235 Q138 310 162 370 L238 370 Q262 310 245 235 Z" fill="#1b5e20"/>
+  <path d="M185 240 L215 240 L218 300 L182 300 Z" fill="#c8e6c9" opacity=".3"/>
+  <!-- Vine decorations -->
+  <path d="M150 260 Q130 280 140 300 Q155 310 145 330" fill="none" stroke="#81c784" stroke-width="2" opacity=".4"/>
+  <path d="M250 260 Q270 280 260 300 Q245 310 255 330" fill="none" stroke="#81c784" stroke-width="2" opacity=".4"/>
+  <text x="200" y="390" text-anchor="middle" fill="white" opacity=".8" font-family="sans-serif" font-size="14" font-weight="bold">フォレスト</text>
+</svg>

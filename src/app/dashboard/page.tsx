@@ -1,0 +1,120 @@
+"use client";
+
+import { useMemo } from "react";
+import Link from "next/link";
+import { useEvents } from "@/hooks/useEvents";
+import { useOshi } from "@/hooks/useOshi";
+import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
+
+function SkeletonCard() {
+  return (
+    <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-white/30 p-4 animate-pulse">
+      <div className="h-4 bg-white/40 rounded w-1/3 mb-3" />
+      <div className="h-3 bg-white/40 rounded w-full mb-2" />
+      <div className="h-3 bg-white/40 rounded w-2/3" />
+    </div>
+  );
+}
+
+export default function DashboardPage() {
+  const { items: events, loading: eventsLoading } = useEvents();
+  const { items: oshiList, loading: oshiLoading } = useOshi();
+  const isLoading = eventsLoading || oshiLoading;
+
+
+  // Collect all oshi images for photo wall background
+  const allImages = useMemo(() => {
+    const imgs: string[] = [];
+    for (const oshi of oshiList) {
+      if (oshi.image) imgs.push(oshi.image);
+      if (oshi.images) {
+        for (const img of oshi.images) {
+          imgs.push(img.data);
+        }
+      }
+    }
+    return imgs;
+  }, [oshiList]);
+
+
+  return (
+    <div className="h-[100dvh] relative flex flex-col overflow-hidden pb-20">
+      {/* Photo wall background - fixed to viewport, repeats to fill */}
+      {allImages.length > 0 && (
+        <div className="fixed inset-0 opacity-80 z-0 overflow-hidden">
+          <div className="grid grid-cols-3 gap-0" style={{ minHeight: "200vh" }}>
+            {(() => {
+              const tiles: string[] = [];
+              while (tiles.length < 60) {
+                tiles.push(...allImages);
+              }
+              return tiles.slice(0, 60).map((src, i) => (
+                <img
+                  key={i}
+                  src={src}
+                  alt=""
+                  className="w-full block"
+                  draggable={false}
+                />
+              ));
+            })()}
+          </div>
+        </div>
+      )}
+
+      {/* Fallback bg when no images */}
+      {allImages.length === 0 && (
+        <div
+          className="absolute inset-0 z-0"
+          style={{
+            background:
+              "linear-gradient(180deg, var(--color-primary-light, #fce7f3) 0%, var(--bg-page, #fff) 100%)",
+          }}
+        />
+      )}
+
+      {/* Fixed overlay to prevent raw background showing */}
+      <div className="fixed inset-0 z-[1]" style={{ background: "rgba(0,0,0,0.15)", pointerEvents: "none" }} />
+
+      {/* Content layer */}
+      <div className="relative z-10 flex flex-col h-full">
+        {/* Header */}
+        <header
+          className="shrink-0 backdrop-blur-md border-b border-white/20"
+          style={{ background: "var(--bg-header)" }}
+        >
+          <div className="max-w-lg mx-auto flex items-center h-10 px-4">
+            <div className="flex-1" />
+            <h1 className="text-lg font-bold text-center" style={{ color: "var(--header-text)" }}>
+              推し活スケジュール帳
+            </h1>
+            <div className="flex-1 flex justify-end">
+              <Link href="/settings" style={{ color: "var(--header-text)", opacity: 0.8 }}>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7 7 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a7 7 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a7 7 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a7 7 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Scrollable content area */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
+            {isLoading ? (
+              <>
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </>
+            ) : (
+              <UpcomingEvents events={events} oshiList={oshiList} />
+            )}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}

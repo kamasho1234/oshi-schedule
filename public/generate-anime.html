@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アニメ風イラスト生成</title>
+<style>
+body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 0 16px; background: #111; color: #eee; }
+h1 { font-size: 18px; text-align: center; }
+p { font-size: 13px; color: #999; text-align: center; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0; }
+canvas { width: 100%; border-radius: 8px; cursor: pointer; }
+button { display: block; width: 100%; padding: 14px; margin: 10px 0; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; color: white; background: #ec4899; }
+#status { text-align: center; font-size: 13px; color: #22c55e; margin: 8px 0; }
+</style>
+</head>
+<body>
+<h1>オリジナルアニメ風イラスト生成</h1>
+<p>Canvasで生成したオリジナルイラストです。著作権フリー。<br>クリックで個別ダウンロード可能。</p>
+<button onclick="generateAll()">6枚生成する</button>
+<button onclick="saveToProject()">プロジェクトに保存（Base64でコピー）</button>
+<div id="status"></div>
+<div class="grid" id="grid"></div>
+
+<script>
+const W = 400, H = 400;
+
+// アニメキャラ風のシルエットを描画
+function drawAnimeChar(ctx, x, y, scale, palette) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+
+  // 髪
+  const hairColor = palette.hair;
+  ctx.fillStyle = hairColor;
+  ctx.beginPath();
+  ctx.ellipse(0, -50, 45, 55, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // サイドヘア
+  ctx.beginPath();
+  ctx.ellipse(-35, -10, 15, 50, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(35, -10, 15, 50, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 顔
+  ctx.fillStyle = '#fce4d6';
+  ctx.beginPath();
+  ctx.ellipse(0, -35, 30, 35, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 目（大きなアニメ目）
+  // 左目
+  ctx.fillStyle = palette.eye;
+  ctx.beginPath();
+  ctx.ellipse(-12, -38, 10, 12, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.ellipse(-9, -42, 4, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.ellipse(-12, -36, 5, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(-10, -38, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 右目
+  ctx.fillStyle = palette.eye;
+  ctx.beginPath();
+  ctx.ellipse(12, -38, 10, 12, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.ellipse(15, -42, 4, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.ellipse(12, -36, 5, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(14, -38, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 口
+  ctx.fillStyle = '#e88';
+  ctx.beginPath();
+  ctx.arc(0, -22, 3, 0, Math.PI);
+  ctx.fill();
+
+  // 体（衣装）
+  ctx.fillStyle = palette.outfit;
+  ctx.beginPath();
+  ctx.moveTo(-25, 0);
+  ctx.quadraticCurveTo(-35, 60, -20, 100);
+  ctx.lineTo(20, 100);
+  ctx.quadraticCurveTo(35, 60, 25, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  // 衣装ディテール
+  ctx.fillStyle = palette.detail;
+  ctx.beginPath();
+  ctx.moveTo(-5, 5);
+  ctx.lineTo(5, 5);
+  ctx.lineTo(8, 50);
+  ctx.lineTo(-8, 50);
+  ctx.closePath();
+  ctx.fill();
+
+  // リボンまたはアクセサリー
+  if (palette.ribbon) {
+    ctx.fillStyle = palette.ribbon;
+    ctx.beginPath();
+    ctx.moveTo(0, -70);
+    ctx.lineTo(-15, -60);
+    ctx.lineTo(0, -55);
+    ctx.lineTo(15, -60);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+// 背景エフェクト
+function drawBackground(ctx, w, h, palette) {
+  // グラデーション背景
+  const grad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, w*0.7);
+  grad.addColorStop(0, palette.bgCenter);
+  grad.addColorStop(1, palette.bgEdge);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // キラキラエフェクト
+  for (let i = 0; i < 30; i++) {
+    const sx = Math.random() * w;
+    const sy = Math.random() * h;
+    const size = Math.random() * 4 + 1;
+    const alpha = Math.random() * 0.6 + 0.2;
+    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+    ctx.beginPath();
+    // 星型
+    for (let j = 0; j < 4; j++) {
+      const angle = (j / 4) * Math.PI * 2;
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(sx + Math.cos(angle) * size * 2, sy + Math.sin(angle) * size * 2);
+    }
+    ctx.arc(sx, sy, size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 花びら/ハートエフェクト
+  for (let i = 0; i < 8; i++) {
+    const px = Math.random() * w;
+    const py = Math.random() * h;
+    const s = Math.random() * 10 + 5;
+    ctx.fillStyle = `rgba(255,200,220,${Math.random()*0.3+0.1})`;
+    ctx.beginPath();
+    ctx.arc(px, py, s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+const palettes = [
+  { // ピンク魔法少女
+    hair: '#ff69b4', eye: '#ff1493', outfit: '#ff69b4', detail: '#fff0f5',
+    ribbon: '#ffdf00', bgCenter: '#2d1b3d', bgEdge: '#0d0015',
+    name: '魔法少女マジカ'
+  },
+  { // 青髪クール
+    hair: '#4fc3f7', eye: '#0288d1', outfit: '#1565c0', detail: '#e3f2fd',
+    ribbon: '#ffd54f', bgCenter: '#0d2137', bgEdge: '#020a15',
+    name: 'アイスブルー'
+  },
+  { // 紫ミステリアス
+    hair: '#ce93d8', eye: '#9c27b0', outfit: '#6a1b9a', detail: '#f3e5f5',
+    ribbon: '#e040fb', bgCenter: '#1a0a2e', bgEdge: '#050010',
+    name: 'ムーンライト'
+  },
+  { // 赤炎
+    hair: '#ef5350', eye: '#c62828', outfit: '#b71c1c', detail: '#ffcdd2',
+    ribbon: '#ff6f00', bgCenter: '#2d0a0a', bgEdge: '#100000',
+    name: 'フレアレッド'
+  },
+  { // 緑自然
+    hair: '#66bb6a', eye: '#2e7d32', outfit: '#1b5e20', detail: '#c8e6c9',
+    ribbon: '#ffee58', bgCenter: '#0a2d0a', bgEdge: '#001500',
+    name: 'フォレスト'
+  },
+  { // 金髪プリンセス
+    hair: '#ffd54f', eye: '#f57f17', outfit: '#fff176', detail: '#fffde7',
+    ribbon: '#e91e63', bgCenter: '#2d2400', bgEdge: '#0f0d00',
+    name: 'ゴールデンスター'
+  },
+];
+
+const canvases = [];
+
+function generateAll() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  canvases.length = 0;
+
+  palettes.forEach((pal, i) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    canvas.title = pal.name + ' (クリックでダウンロード)';
+    canvas.onclick = () => {
+      const a = document.createElement('a');
+      a.download = `anime-${i+1}-${pal.name}.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    };
+
+    const ctx = canvas.getContext('2d');
+
+    // 背景
+    drawBackground(ctx, W, H, pal);
+
+    // キャラクター
+    drawAnimeChar(ctx, W/2, H/2 + 30, 1.8, pal);
+
+    // キャラ名
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(pal.name, W/2, H - 20);
+
+    grid.appendChild(canvas);
+    canvases.push(canvas);
+  });
+
+  document.getElementById('status').textContent = '6枚生成完了！';
+}
+
+function saveToProject() {
+  if (canvases.length === 0) { generateAll(); }
+  const data = canvases.map((c, i) => ({
+    name: palettes[i].name,
+    dataUrl: c.toDataURL('image/jpeg', 0.8)
+  }));
+
+  // localStorage に保存
+  localStorage.setItem('oshi-schedule-anime-images', JSON.stringify(data));
+
+  // クリップボードにもコピー（最初の1枚のURL）
+  const urls = data.map((d, i) => `anime${i+1}: ${d.dataUrl.substring(0, 80)}...`);
+  document.getElementById('status').innerHTML =
+    'localStorageに保存しました！<br>' +
+    'キー: oshi-schedule-anime-images<br><br>' +
+    '<b>以下のURLをLPに使用してください:</b><br>' +
+    '<textarea style="width:100%;height:100px;background:#222;color:#eee;border:1px solid #444;border-radius:8px;padding:8px;font-size:11px">' +
+    data.map((d,i) => `/api/anime/${i+1}`).join('\n') +
+    '</textarea>';
+}
+
+// 自動生成
+generateAll();
+</script>
+</body>
+</html>

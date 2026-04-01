@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サンプルデータ投入</title>
+<style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px 16px; background: #fafafa; }
+h1 { font-size: 18px; text-align: center; }
+p { color: #666; font-size: 13px; text-align: center; }
+button { display: block; width: 100%; padding: 14px; margin: 10px 0; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; color: white; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.seed { background: #ec4899; }
+.clear { background: #ef4444; }
+.go { background: #3b82f6; }
+#status { padding: 14px; border-radius: 10px; background: #f0fdf4; color: #166534; display: none; margin-top: 12px; font-size: 13px; line-height: 1.6; }
+#progress { text-align: center; color: #888; font-size: 13px; margin: 8px 0; }
+.bar { height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden; margin: 8px 0; }
+.bar-fill { height: 100%; background: #ec4899; border-radius: 2px; transition: width 0.3s; width: 0%; }
+</style>
+</head>
+<body>
+<h1>推し活スケジュール帳 サンプルデータ</h1>
+<p>リアルな画像付きサンプルデータを投入します<br>（画像取得に20〜30秒かかります）</p>
+
+<button class="seed" id="seedBtn" onclick="seedData()">サンプルデータを投入する</button>
+<div class="bar"><div class="bar-fill" id="barFill"></div></div>
+<div id="progress"></div>
+<button class="clear" onclick="clearData()">全データを削除する</button>
+<button class="go" onclick="location.href='/'">アプリを開く</button>
+<div id="status"></div>
+
+<script>
+const makeId = () => crypto.randomUUID();
+const now = () => new Date().toISOString();
+function addDays(n) {
+  const d = new Date(); d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function setProgress(pct, msg) {
+  document.getElementById('barFill').style.width = pct + '%';
+  document.getElementById('progress').textContent = msg;
+}
+
+async function fetchImageAsBase64(url) {
+  const res = await fetch(url);
+  const blob = await res.blob();
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxW = 400;
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = h * maxW / w; w = maxW; }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.onerror = () => resolve(null);
+    img.src = URL.createObjectURL(blob);
+  });
+}
+
+async function seedData() {
+  const btn = document.getElementById('seedBtn');
+  btn.disabled = true;
+  const n = now();
+  const oshi1Id = makeId(), oshi2Id = makeId(), oshi3Id = makeId();
+
+  // 画像取得（picsum.photosからリアル写真）
+  setProgress(5, '画像を取得中... (1/3) 星街すいせい');
+
+  // 推し1: 星街すいせい - 青系/ステージ系画像
+  const oshi1Main = await fetchImageAsBase64('https://picsum.photos/seed/suisei1/400/400');
+  const oshi1Gallery = [];
+  for (let i = 2; i <= 7; i++) {
+    setProgress(5 + (i-1)*4, `画像取得中... すいせい (${i-1}/6)`);
+    const img = await fetchImageAsBase64(`https://picsum.photos/seed/suisei${i}/400/${350 + (i%3)*50}`);
+    if (img) oshi1Gallery.push({ id: makeId(), data: img, caption: ['ライブ会場','ステージ','ペンライト','グッズ列','物販','MC'][i-2], createdAt: n });
+  }
+
+  setProgress(35, '画像を取得中... (2/3) YOASOBI');
+  // 推し2: YOASOBI - 紫/音楽系画像
+  const oshi2Main = await fetchImageAsBase64('https://picsum.photos/seed/yoasobi1/400/400');
+  const oshi2Gallery = [];
+  for (let i = 2; i <= 6; i++) {
+    setProgress(35 + (i-1)*4, `画像取得中... YOASOBI (${i-1}/5)`);
+    const img = await fetchImageAsBase64(`https://picsum.photos/seed/yoasobi${i}/400/${350 + (i%3)*50}`);
+    if (img) oshi2Gallery.push({ id: makeId(), data: img, caption: ['CDジャケット','ライブ','MV撮影','アー写','フェス'][i-2], createdAt: n });
+  }
+
+  setProgress(60, '画像を取得中... (3/3) 推しの子');
+  // 推し3: 推しの子 - ピンク/アニメ系画像
+  const oshi3Main = await fetchImageAsBase64('https://picsum.photos/seed/oshinoko1/400/400');
+  const oshi3Gallery = [];
+  for (let i = 2; i <= 7; i++) {
+    setProgress(60 + (i-1)*3, `画像取得中... 推しの子 (${i-1}/6)`);
+    const img = await fetchImageAsBase64(`https://picsum.photos/seed/oshinoko${i}/400/${350 + (i%3)*50}`);
+    if (img) oshi3Gallery.push({ id: makeId(), data: img, caption: ['コラボカフェ','展示会','グッズ','聖地巡礼','ポスター','原画展'][i-2], createdAt: n });
+  }
+
+  setProgress(85, 'グッズ画像を取得中...');
+  // グッズ画像
+  const goodsImages = [];
+  for (let i = 1; i <= 8; i++) {
+    const img = await fetchImageAsBase64(`https://picsum.photos/seed/goods${i}/300/300`);
+    goodsImages.push(img);
+  }
+
+  setProgress(95, 'データを保存中...');
+
+  // === 推しデータ ===
+  const oshiList = [
+    {
+      id: oshi1Id, name: '星街すいせい', genre: 'vtuber', group: 'ホロライブ',
+      birthday: '03-22', themeColor: '#06b6d4',
+      memo: 'ホロライブ所属のバーチャルアイドル。歌唱力が圧倒的で、テトリスも超うまい。Stellar Stellarが代表曲。',
+      image: oshi1Main, images: oshi1Gallery,
+      snsLinks: [
+        { platform: 'twitter', url: 'https://x.com/suisei_hosimati', label: 'メイン' },
+        { platform: 'youtube', url: 'https://www.youtube.com/@HoshimachiSuisei', label: 'ch' },
+      ],
+      createdAt: n, updatedAt: n
+    },
+    {
+      id: oshi2Id, name: 'YOASOBI', genre: 'band', group: '',
+      birthday: '', themeColor: '#8b5cf6',
+      memo: 'ikura(Vo.)とAyase(Comp.)による音楽ユニット。小説を楽曲化するコンセプトが唯一無二。「夜に駆ける」「アイドル」等。',
+      image: oshi2Main, images: oshi2Gallery,
+      snsLinks: [
+        { platform: 'twitter', url: 'https://x.com/YOASOBI_staff', label: '公式' },
+        { platform: 'youtube', url: 'https://www.youtube.com/@Ayase0404', label: 'Ayase' },
+        { platform: 'instagram', url: 'https://www.instagram.com/yoasobi_staff/', label: '公式' },
+      ],
+      createdAt: n, updatedAt: n
+    },
+    {
+      id: oshi3Id, name: '推しの子', genre: 'anime', group: '',
+      birthday: '', themeColor: '#ec4899',
+      memo: '赤坂アカ×横槍メンゴ原作。芸能界の闇と家族愛を描く。アニメ3期放送中。OPのYOASOBI「アイドル」が社会現象に。',
+      image: oshi3Main, images: oshi3Gallery,
+      snsLinks: [
+        { platform: 'twitter', url: 'https://x.com/oshinoko_anime', label: '公式' },
+        { platform: 'youtube', url: 'https://www.youtube.com/@anime_oshinoko', label: '公式ch' },
+      ],
+      createdAt: n, updatedAt: n
+    }
+  ];
+
+  // === イベントデータ ===
+  const events = [
+    { id: makeId(), title: 'Suisei 3rd Solo Live「Stellar into the Galaxy」', date: addDays(2), startTime: '17:00', endTime: '20:00', category: 'live', oshiId: oshi1Id, location: '東京ガーデンシアター', url: 'https://hololive.hololivepro.com/', memo: 'アリーナ席確保！ペンライト忘れずに', isAllDay: false, createdAt: n, updatedAt: n },
+    { id: makeId(), title: 'すいせい 歌枠配信', date: addDays(1), startTime: '21:00', endTime: '', category: 'streaming', oshiId: oshi1Id, location: '', url: '', memo: '新曲初披露あるかも', isAllDay: false, createdAt: n, updatedAt: n },
+    { id: makeId(), title: 'YOASOBI「THE BOOK 4」発売日', date: addDays(5), startTime: '', endTime: '', category: 'release', oshiId: oshi2Id, location: '', url: '', memo: 'Amazon予約済み。初回限定盤', isAllDay: true, createdAt: n, updatedAt: n },
+    { id: makeId(), title: '【推しの子】3期 第4話「スキャンダル」', date: addDays(3), startTime: '23:30', endTime: '00:00', category: 'broadcast', oshiId: oshi3Id, location: 'TOKYO MX / ABEMAで同時配信', url: '', memo: '', isAllDay: false, createdAt: n, updatedAt: n },
+    { id: makeId(), title: 'YOASOBI ARENA TOUR 2026「電光石火」大阪公演', date: addDays(12), startTime: '18:00', endTime: '21:00', category: 'live', oshiId: oshi2Id, location: '大阪城ホール', url: '', memo: 'ホテル予約済み。前泊する', isAllDay: false, createdAt: n, updatedAt: n },
+    { id: makeId(), title: 'すいせい 3rd LIVE グッズ事前販売', date: addDays(0), startTime: '12:00', endTime: '', category: 'goods_sale', oshiId: oshi1Id, location: 'hololive公式ショップ', url: '', memo: 'ペンライト新色＋タオル＋Tシャツ', isAllDay: false, createdAt: n, updatedAt: n },
+    { id: makeId(), title: '【推しの子】×TOWER RECORDS コラボカフェ', date: addDays(7), startTime: '11:00', endTime: '20:00', category: 'other', oshiId: oshi3Id, location: 'TOWER RECORDS CAFE 渋谷店', url: '', memo: '3/25予約済み 13:00の回', isAllDay: false, createdAt: n, updatedAt: n },
+    { id: makeId(), title: '星街すいせい 誕生日', date: '2027-03-22', startTime: '', endTime: '', category: 'birthday', oshiId: oshi1Id, location: '', url: '', memo: '', isAllDay: true, createdAt: n, updatedAt: n },
+  ];
+
+  // === グッズデータ ===
+  const goods = [
+    { id: makeId(), name: 'Suisei 3rd LIVE ペンライト', image: goodsImages[0], category: 'penlight', price: 4500, purchaseDate: addDays(-10), oshiId: oshi1Id, memo: '新色の水色。キンブレ互換', createdAt: n, updatedAt: n },
+    { id: makeId(), name: 'Suisei 3rd LIVE マフラータオル', image: goodsImages[1], category: 'towel', price: 2000, purchaseDate: addDays(-10), oshiId: oshi1Id, memo: '', createdAt: n, updatedAt: n },
+    { id: makeId(), name: 'Suisei 3rd LIVE Tシャツ', image: goodsImages[2], category: 'tshirt', price: 3500, purchaseDate: addDays(-5), oshiId: oshi1Id, memo: 'Lサイズ。黒ベースに星柄', createdAt: n, updatedAt: n },
+    { id: makeId(), name: 'YOASOBI アクリルスタンド ikura', image: goodsImages[3], category: 'acrylic', price: 1500, purchaseDate: addDays(-3), oshiId: oshi2Id, memo: 'ツアーグッズ', createdAt: n, updatedAt: n },
+    { id: makeId(), name: '【推しの子】ブロマイドセット vol.3', image: goodsImages[4], category: 'photo', price: 880, purchaseDate: addDays(-7), oshiId: oshi3Id, memo: '全5種コンプ。アクア、ルビー、有馬かな、黒川あかね、MEMちょ', createdAt: n, updatedAt: n },
+    { id: makeId(), name: 'YOASOBI「THE BOOK 4」初回限定盤', image: goodsImages[5], category: 'cd_dvd', price: 3850, purchaseDate: addDays(-1), oshiId: oshi2Id, memo: 'Blu-ray付き。ライブ映像収録', createdAt: n, updatedAt: n },
+    { id: makeId(), name: '【推しの子】ぴえヨン ぬいぐるみ L', image: goodsImages[6], category: 'plush', price: 2980, purchaseDate: addDays(-14), oshiId: oshi3Id, memo: '公式ショップ限定', createdAt: n, updatedAt: n },
+    { id: makeId(), name: 'hololive 星街すいせい 1stフォトブック', image: goodsImages[7], category: 'book', price: 2750, purchaseDate: addDays(-20), oshiId: oshi1Id, memo: '撮り下ろし写真＋インタビュー', createdAt: n, updatedAt: n },
+  ];
+
+  // === 出費データ ===
+  const expenses = [
+    { id: makeId(), amount: 4500, date: addDays(-10), category: 'goods', oshiId: oshi1Id, memo: 'ペンライト', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 2000, date: addDays(-10), category: 'goods', oshiId: oshi1Id, memo: 'マフラータオル', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 3500, date: addDays(-5), category: 'goods', oshiId: oshi1Id, memo: 'Tシャツ', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 8800, date: addDays(-2), category: 'ticket', oshiId: oshi1Id, memo: '3rd LIVE アリーナ席', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 3200, date: addDays(-2), category: 'transport', oshiId: oshi1Id, memo: '新幹線 東京↔名古屋 往復', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 1500, date: addDays(-8), category: 'goods', oshiId: oshi2Id, memo: 'アクスタ ikura', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 3850, date: addDays(-1), category: 'goods', oshiId: oshi2Id, memo: 'THE BOOK 4 初回盤', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 880, date: addDays(-7), category: 'goods', oshiId: oshi3Id, memo: 'ブロマイドセット', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 2980, date: addDays(-14), category: 'goods', oshiId: oshi3Id, memo: 'ぴえヨン ぬいぐるみ', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 1650, date: addDays(-3), category: 'food', oshiId: oshi3Id, memo: 'コラボカフェ（ルビーのパフェ+ドリンク）', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 980, date: addDays(-15), category: 'streaming_sub', oshiId: oshi1Id, memo: 'すいせいメンバーシップ（月額）', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 12800, date: addDays(-20), category: 'ticket', oshiId: oshi2Id, memo: 'ARENA TOUR 大阪 S席', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 8500, date: addDays(-20), category: 'accommodation', oshiId: oshi2Id, memo: 'ホテルニューオータニ大阪 前泊', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 2750, date: addDays(-20), category: 'goods', oshiId: oshi1Id, memo: 'フォトブック', createdAt: n, updatedAt: n },
+    { id: makeId(), amount: 1800, date: addDays(0), category: 'food', oshiId: oshi1Id, memo: 'ライブ前の腹ごしらえ', createdAt: n, updatedAt: n },
+  ];
+
+  // === 保存 ===
+  localStorage.setItem('oshi-schedule-oshi', JSON.stringify(oshiList));
+  localStorage.setItem('oshi-schedule-events', JSON.stringify(events));
+  localStorage.setItem('oshi-schedule-goods', JSON.stringify(goods));
+  localStorage.setItem('oshi-schedule-expenses', JSON.stringify(expenses));
+  localStorage.setItem('oshi-schedule-settings', JSON.stringify({
+    themeColor: '#ec4899',
+    designTheme: 'default',
+    monthlyBudget: 30000,
+    dashboardBg: { enabled: true, oshiId: oshi1Id, layout: 'collage', opacity: 0.1, brightness: 0.5 }
+  }));
+
+  setProgress(100, '完了！');
+  btn.disabled = false;
+  const s = document.getElementById('status');
+  s.style.display = 'block';
+  s.innerHTML = `<b>投入完了！</b><br><br>
+    推し: 3人<br>
+    ・星街すいせい（VTuber / ホロライブ）画像7枚<br>
+    ・YOASOBI（バンド）画像6枚<br>
+    ・推しの子（アニメ）画像7枚<br><br>
+    イベント: 8件（ライブ、配信、放送、グッズ販売等）<br>
+    グッズ: 8件（画像付き）<br>
+    出費: 15件（合計 ¥59,690）<br>
+    月間予算: ¥30,000<br>
+    ダッシュボード背景: ON<br><br>
+    <b>「アプリを開く」を押して確認！</b>`;
+}
+
+function clearData() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith('oshi-schedule')) keys.push(k);
+  }
+  keys.forEach(k => localStorage.removeItem(k));
+  const s = document.getElementById('status');
+  s.style.display = 'block';
+  s.style.background = '#fef2f2'; s.style.color = '#991b1b';
+  s.textContent = '全データを削除しました';
+}
+</script>
+</body>
+</html>

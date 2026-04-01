@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="bg4" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#2d0a0a"/>
+      <stop offset="100%" stop-color="#100000"/>
+    </radialGradient>
+    <radialGradient id="eyeG4" cx="40%" cy="35%">
+      <stop offset="0%" stop-color="#ef5350"/>
+      <stop offset="100%" stop-color="#c62828"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg4)"/>
+  <!-- Flame particles -->
+  <circle cx="70" cy="80" r="3" fill="#ff6f00" opacity=".3"/><circle cx="330" cy="50" r="2" fill="#ef5350" opacity=".4"/>
+  <circle cx="50" cy="300" r="2.5" fill="#ff6f00" opacity=".2"/><circle cx="350" cy="330" r="2" fill="#ef5350" opacity=".3"/>
+  <circle cx="90" cy="200" r="1.5" fill="#ffd54f" opacity=".3"/><circle cx="310" cy="250" r="2" fill="#ffd54f" opacity=".2"/>
+  <!-- Hair -->
+  <ellipse cx="200" cy="148" rx="78" ry="85" fill="#ef5350"/>
+  <path d="M140 130 Q120 80 145 100 Q130 60 160 90 Q150 50 180 85" fill="#ef5350"/>
+  <path d="M260 130 Q280 80 255 100 Q270 60 240 90 Q250 50 220 85" fill="#ef5350"/>
+  <ellipse cx="130" cy="190" rx="20" ry="65" fill="#ef5350" transform="rotate(-8 130 190)"/>
+  <ellipse cx="270" cy="190" rx="20" ry="65" fill="#ef5350" transform="rotate(8 270 190)"/>
+  <!-- Face -->
+  <ellipse cx="200" cy="175" rx="50" ry="55" fill="#fce4d6"/>
+  <!-- Eyes -->
+  <ellipse cx="178" cy="168" rx="15" ry="19" fill="url(#eyeG4)"/>
+  <ellipse cx="175" cy="162" rx="5" ry="7" fill="white"/>
+  <ellipse cx="178" cy="172" rx="7" ry="9" fill="#200000"/>
+  <circle cx="175" cy="168" r="3.5" fill="white"/>
+  <ellipse cx="222" cy="168" rx="15" ry="19" fill="url(#eyeG4)"/>
+  <ellipse cx="225" cy="162" rx="5" ry="7" fill="white"/>
+  <ellipse cx="222" cy="172" rx="7" ry="9" fill="#200000"/>
+  <circle cx="225" cy="168" r="3.5" fill="white"/>
+  <!-- Blush -->
+  <ellipse cx="165" cy="190" rx="10" ry="5" fill="#ffcdd2" opacity=".4"/>
+  <ellipse cx="235" cy="190" rx="10" ry="5" fill="#ffcdd2" opacity=".4"/>
+  <!-- Mouth - confident smile -->
+  <path d="M190 198 Q200 208 210 198" fill="none" stroke="#c44" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Flame hair tips -->
+  <circle cx="140" cy="100" r="4" fill="#ff6f00" opacity=".5"/>
+  <circle cx="260" cy="100" r="4" fill="#ff6f00" opacity=".5"/>
+  <!-- Outfit -->
+  <path d="M155 235 Q138 310 162 370 L238 370 Q262 310 245 235 Z" fill="#b71c1c"/>
+  <path d="M185 245 L215 245 L218 290 L182 290 Z" fill="#ffcdd2" opacity=".4"/>
+  <!-- Sword/staff -->
+  <line x1="280" y1="150" x2="310" y2="350" stroke="#ffd54f" stroke-width="3" opacity=".6"/>
+  <polygon points="280,140 270,155 290,155" fill="#ffd54f" opacity=".6"/>
+  <text x="200" y="390" text-anchor="middle" fill="white" opacity=".8" font-family="sans-serif" font-size="14" font-weight="bold">フレアレッド</text>
+</svg>

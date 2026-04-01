@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #ec4899;
+  --color-primary-light: #fce7f3;
+  --color-primary-dark: #9d174d;
+  --color-primary-h: 330;
+  --color-primary-s: 81%;
+  --color-primary-l: 60%;
+  --neon-r: 236;
+  --neon-g: 72;
+  --neon-b: 153;
+
+  /* Design theme variables (defaults) */
+  --bg-page: #f8f9fa;
+  --bg-card: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.8);
+  --bg-nav: #ffffff;
+  --bg-modal: #ffffff;
+  --bg-input: #ffffff;
+  --bg-skeleton: #f3f4f6;
+
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-heading: #1f2937;
+
+  --border-card: #f3f4f6;
+  --border-input: #e5e7eb;
+  --border-divider: #f3f4f6;
+
+  --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  --radius-card: 1rem;
+  --radius-button: 0.75rem;
+  --radius-input: 0.75rem;
+
+  --font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP",
+    sans-serif;
+  --backdrop-blur: blur(12px);
+  --nav-border-top: 1px solid #e5e7eb;
+
+  --header-text: #ffffff;
+  --header-accent-bg: rgba(255, 255, 255, 0.2);
+
+  --nav-bg: rgba(0, 0, 0, 0.75);
+  --nav-tab-bg: rgba(0, 0, 0, 0.6);
+  --nav-text: #ffffff;
+  --nav-text-inactive: rgba(255, 255, 255, 0.45);
+  --nav-accent-bg: rgba(255, 255, 255, 0.2);
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Theme utility classes */
+@layer utilities {
+  .bg-page {
+    background: var(--bg-page);
+  }
+  .bg-card {
+    background: var(--bg-card);
+  }
+  .bg-header {
+    background: var(--bg-header);
+  }
+  .bg-nav {
+    background: var(--bg-nav);
+  }
+  .bg-modal {
+    background: var(--bg-modal);
+  }
+  .bg-input {
+    background: var(--bg-input);
+  }
+  .text-heading {
+    color: var(--text-heading);
+  }
+  .text-body {
+    color: var(--text-primary);
+  }
+  .text-sub {
+    color: var(--text-secondary);
+  }
+  .text-dim {
+    color: var(--text-muted);
+  }
+  .border-card {
+    border-color: var(--border-card);
+  }
+  .border-input {
+    border-color: var(--border-input);
+  }
+  .border-divider {
+    border-color: var(--border-divider);
+  }
+  .shadow-themed {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-themed-hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+  .radius-card {
+    border-radius: var(--radius-card);
+  }
+  .radius-button {
+    border-radius: var(--radius-button);
+  }
+  .radius-input {
+    border-radius: var(--radius-input);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.25s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* Masonry layout for photo wall */
+.masonry {
+  columns: 2;
+  column-gap: 0.5rem;
+}
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 0.5rem;
+}
+
+/* Hide scrollbar for cleaner mobile look */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

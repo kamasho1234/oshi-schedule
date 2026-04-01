@@ -1,0 +1,307 @@
+// サンプルデータ投入スクリプト
+// ブラウザコンソールで実行、またはseed.htmlから呼び出し
+
+const now = new Date().toISOString();
+
+const oshi = [
+  {
+    id: "oshi_sho",
+    name: "SHO",
+    image: "/img/band2.jpg",
+    images: [
+      { id: "img_s1", data: "/img/band3.jpg", caption: "Solo Live 2026", createdAt: now },
+      { id: "img_s2", data: "/img/band5.jpg", caption: "武道館公演", createdAt: now },
+      { id: "img_s3", data: "/img/band6.jpg", caption: "MC中", createdAt: now },
+      { id: "img_s4", data: "/img/band8.jpg", caption: "アンコール", createdAt: now },
+    ],
+    birthday: "2000-07-15",
+    genre: "band",
+    group: "VOID CHROME",
+    snsLinks: [
+      { platform: "twitter", url: "https://x.com/example", label: "SHO公式" },
+      { platform: "youtube", url: "https://youtube.com/example", label: "VOID CHROME" },
+    ],
+    memo: "ギター&ボーカル担当。7月のソロライブが楽しみ！",
+    themeColor: "#ef4444",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "oshi_haruki",
+    name: "HARUKI",
+    image: "/img/midol1.jpg",
+    images: [
+      { id: "img_h1", data: "/img/midol2.jpg", caption: "ファンミ", createdAt: now },
+      { id: "img_h2", data: "/img/midol3.jpg", caption: "握手会", createdAt: now },
+      { id: "img_h3", data: "/img/midol5.jpg", caption: "新衣装", createdAt: now },
+      { id: "img_h4", data: "/img/midol7.jpg", caption: "誕生日イベント", createdAt: now },
+      { id: "img_h5", data: "/img/midol9.jpg", caption: "雑誌撮影", createdAt: now },
+    ],
+    birthday: "2001-03-22",
+    genre: "idol",
+    group: "PRISM∞NOVA",
+    snsLinks: [
+      { platform: "twitter", url: "https://x.com/example2", label: "HARUKI" },
+      { platform: "instagram", url: "https://instagram.com/example2", label: "haruki_official" },
+      { platform: "youtube", url: "https://youtube.com/example2", label: "PRISM∞NOVA" },
+    ],
+    memo: "センター。ダンスが上手い。3月の誕生日イベント最高だった",
+    themeColor: "#8b5cf6",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "oshi_hina",
+    name: "HINA",
+    image: "/img/idol2.jpg",
+    images: [
+      { id: "img_hi1", data: "/img/idol3.jpg", caption: "ライブ", createdAt: now },
+      { id: "img_hi2", data: "/img/idol5.jpg", caption: "衣装チェンジ", createdAt: now },
+      { id: "img_hi3", data: "/img/idol7.jpg", caption: "MC", createdAt: now },
+      { id: "img_hi4", data: "/img/idol9.jpg", caption: "アンコール", createdAt: now },
+    ],
+    birthday: "2002-11-03",
+    genre: "idol",
+    group: "Lumi☆Fleur",
+    snsLinks: [
+      { platform: "twitter", url: "https://x.com/example3", label: "HINA" },
+      { platform: "instagram", url: "https://instagram.com/example3", label: "hina_lumi" },
+      { platform: "tiktok", url: "https://tiktok.com/example3", label: "hina_dance" },
+    ],
+    memo: "歌唱力抜群。11月の生誕祭に向けて貯金中",
+    themeColor: "#ec4899",
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "oshi_aria",
+    name: "天城アリア",
+    image: "/img/anime-battle.jpg",
+    images: [
+      { id: "img_a1", data: "/img/anime-girl-city.jpg", caption: "キービジュアル", createdAt: now },
+      { id: "img_a2", data: "/img/anime-3.jpg", caption: "第3話", createdAt: now },
+      { id: "img_a3", data: "/img/anime5.jpg", caption: "変身シーン", createdAt: now },
+      { id: "img_a4", data: "/img/anime7.jpg", caption: "エンドカード", createdAt: now },
+    ],
+    birthday: "2026-01-08",
+    genre: "anime",
+    group: "蒼穹のアリア",
+    snsLinks: [
+      { platform: "twitter", url: "https://x.com/example4", label: "蒼穹のアリア公式" },
+      { platform: "youtube", url: "https://youtube.com/example4", label: "公式チャンネル" },
+    ],
+    memo: "2期放送中！Blu-ray全巻予約済み",
+    themeColor: "#06b6d4",
+    createdAt: now,
+    updatedAt: now,
+  },
+];
+
+const events = [
+  {
+    id: "ev_1",
+    title: 'VOID CHROME Solo Live "Starlight"',
+    date: "2026-04-15",
+    startTime: "18:00",
+    endTime: "21:00",
+    category: "live",
+    oshiId: "oshi_sho",
+    location: "横浜アリーナ",
+    url: "",
+    memo: "チケット確保済み。SS席",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_2",
+    title: "VOID CHROME 生配信",
+    date: "2026-04-18",
+    startTime: "21:00",
+    endTime: "",
+    category: "streaming",
+    oshiId: "oshi_sho",
+    location: "",
+    url: "https://youtube.com/example",
+    memo: "新曲初披露予定",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_3",
+    title: "蒼穹のアリア 2期 第4話",
+    date: "2026-04-20",
+    startTime: "23:30",
+    endTime: "",
+    category: "broadcast",
+    oshiId: "oshi_aria",
+    location: "",
+    url: "",
+    memo: "TOKYO MX",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_4",
+    title: "PRISM∞NOVA HARUKI バースデーイベント",
+    date: "2026-04-22",
+    startTime: "14:00",
+    endTime: "17:00",
+    category: "live",
+    oshiId: "oshi_haruki",
+    location: "Zepp DiverCity",
+    url: "",
+    memo: "プレゼント用意した！",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_5",
+    title: "Lumi☆Fleur ファンミーティング",
+    date: "2026-04-16",
+    startTime: "13:00",
+    endTime: "16:00",
+    category: "live",
+    oshiId: "oshi_hina",
+    location: "幕張メッセ",
+    url: "",
+    memo: "握手会あり",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_6",
+    title: "Lumi☆Fleur 新曲MV公開",
+    date: "2026-04-18",
+    startTime: "00:00",
+    endTime: "",
+    category: "release",
+    oshiId: "oshi_hina",
+    location: "",
+    url: "https://youtube.com/example",
+    memo: "",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_7",
+    title: "蒼穹のアリア Blu-ray Vol.1 発売",
+    date: "2026-04-25",
+    startTime: "",
+    endTime: "",
+    category: "release",
+    oshiId: "oshi_aria",
+    location: "",
+    url: "",
+    memo: "Amazon予約済み",
+    isAllDay: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_8",
+    title: "VOID CHROME 全国ツアー 大阪",
+    date: "2026-04-29",
+    startTime: "17:00",
+    endTime: "20:00",
+    category: "live",
+    oshiId: "oshi_sho",
+    location: "大阪城ホール",
+    url: "",
+    memo: "遠征！宿泊予約済み",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_9",
+    title: "PRISM∞NOVA 2nd Album 発売",
+    date: "2026-05-10",
+    startTime: "",
+    endTime: "",
+    category: "release",
+    oshiId: "oshi_haruki",
+    location: "",
+    url: "",
+    memo: "初回限定盤予約済み",
+    isAllDay: true,
+    createdAt: now,
+    updatedAt: now,
+  },
+  {
+    id: "ev_10",
+    title: "Lumi☆Fleur ワンマンライブ",
+    date: "2026-05-27",
+    startTime: "18:30",
+    endTime: "21:00",
+    category: "live",
+    oshiId: "oshi_hina",
+    location: "日本武道館",
+    url: "",
+    memo: "初武道館！絶対行く",
+    isAllDay: false,
+    createdAt: now,
+    updatedAt: now,
+  },
+];
+
+const goods = [
+  // VOID CHROME
+  { id: "g_1", name: "VOID CHROME ペンライト", image: "/img/vc_penlight1.jpg", category: "penlight", price: 3500, purchaseDate: "2026-03-01", oshiId: "oshi_sho", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_2", name: "VOID CHROME タオル", image: "/img/vc_towel1.jpg", category: "towel", price: 2000, purchaseDate: "2026-03-01", oshiId: "oshi_sho", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_3", name: "VOID CHROME Tシャツ", image: "/img/vc_tshirt1.jpg", category: "tshirt", price: 4000, purchaseDate: "2026-03-15", oshiId: "oshi_sho", memo: "ツアーグッズ", createdAt: now, updatedAt: now },
+  { id: "g_4", name: "VOID CHROME ぬいぐるみ", image: "/img/vc_plush1.jpg", category: "plush", price: 2800, purchaseDate: "2026-02-14", oshiId: "oshi_sho", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_5", name: "VOID CHROME LIVE DVD", image: "/img/vc_cddvd1.jpg", category: "cd_dvd", price: 8800, purchaseDate: "2026-01-20", oshiId: "oshi_sho", memo: "初回限定盤", createdAt: now, updatedAt: now },
+  // PRISM∞NOVA
+  { id: "g_6", name: "PRISM∞NOVA ペンライト", image: "/img/penlight2.jpg", category: "penlight", price: 3500, purchaseDate: "2026-03-22", oshiId: "oshi_haruki", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_7", name: "HARUKI タオル", image: "/img/towel2.jpg", category: "towel", price: 2000, purchaseDate: "2026-03-22", oshiId: "oshi_haruki", memo: "バースデーグッズ", createdAt: now, updatedAt: now },
+  { id: "g_8", name: "PRISM∞NOVA アクスタ", image: "/img/acrylic3.jpg", category: "acrylic", price: 1500, purchaseDate: "2026-02-10", oshiId: "oshi_haruki", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_9", name: "PRISM∞NOVA Tシャツ", image: "/img/pn_tshirt1.jpg", category: "tshirt", price: 4000, purchaseDate: "2026-03-22", oshiId: "oshi_haruki", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_10", name: "PRISM∞NOVA ぬいぐるみ", image: "/img/pn_plush1.jpg", category: "plush", price: 2800, purchaseDate: "2026-01-15", oshiId: "oshi_haruki", memo: "HARUKI ver.", createdAt: now, updatedAt: now },
+  { id: "g_11", name: "PRISM∞NOVA DVD", image: "/img/cddvd4.jpg", category: "cd_dvd", price: 7700, purchaseDate: "2026-02-28", oshiId: "oshi_haruki", memo: "", createdAt: now, updatedAt: now },
+  // Lumi☆Fleur
+  { id: "g_12", name: "Lumi☆Fleur ペンライト", image: "/img/lf_penlight1.jpg", category: "penlight", price: 3500, purchaseDate: "2026-03-10", oshiId: "oshi_hina", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_13", name: "HINA タオル", image: "/img/lf_towel1.jpg", category: "towel", price: 2000, purchaseDate: "2026-03-10", oshiId: "oshi_hina", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_14", name: "HINA アクスタ", image: "/img/lf_acrylic1.jpg", category: "acrylic", price: 1500, purchaseDate: "2026-03-10", oshiId: "oshi_hina", memo: "制服ver.", createdAt: now, updatedAt: now },
+  { id: "g_15", name: "Lumi☆Fleur ぬいぐるみ", image: "/img/lf_plush1.jpg", category: "plush", price: 2800, purchaseDate: "2026-02-20", oshiId: "oshi_hina", memo: "", createdAt: now, updatedAt: now },
+  { id: "g_16", name: "Lumi☆Fleur DVD-BOX", image: "/img/lf_cddvd1.jpg", category: "cd_dvd", price: 9900, purchaseDate: "2026-01-30", oshiId: "oshi_hina", memo: "コンプリート盤", createdAt: now, updatedAt: now },
+];
+
+const expenses = [
+  // 3月
+  { id: "ex_1", amount: 12000, date: "2026-03-01", category: "ticket", oshiId: "oshi_sho", memo: "Starlightチケット代", createdAt: now, updatedAt: now },
+  { id: "ex_2", amount: 9500, date: "2026-03-01", category: "goods", oshiId: "oshi_sho", memo: "ペンライト+タオル+Tシャツ", createdAt: now, updatedAt: now },
+  { id: "ex_3", amount: 7000, date: "2026-03-10", category: "goods", oshiId: "oshi_hina", memo: "ペンライト+タオル+アクスタ", createdAt: now, updatedAt: now },
+  { id: "ex_4", amount: 1200, date: "2026-03-15", category: "streaming_sub", memo: "ファンクラブ月額", createdAt: now, updatedAt: now },
+  { id: "ex_5", amount: 8500, date: "2026-03-22", category: "ticket", oshiId: "oshi_haruki", memo: "バースデーイベントチケット", createdAt: now, updatedAt: now },
+  { id: "ex_6", amount: 5500, date: "2026-03-22", category: "goods", oshiId: "oshi_haruki", memo: "ペンライト+タオル", createdAt: now, updatedAt: now },
+  // 4月
+  { id: "ex_7", amount: 3500, date: "2026-04-05", category: "transport", oshiId: "oshi_sho", memo: "横浜アリーナ交通費", createdAt: now, updatedAt: now },
+  { id: "ex_8", amount: 2500, date: "2026-04-10", category: "food", memo: "ライブ前カフェ", createdAt: now, updatedAt: now },
+  { id: "ex_9", amount: 1200, date: "2026-04-15", category: "streaming_sub", memo: "ファンクラブ月額", createdAt: now, updatedAt: now },
+  { id: "ex_10", amount: 15000, date: "2026-04-29", category: "ticket", oshiId: "oshi_sho", memo: "大阪公演チケット", createdAt: now, updatedAt: now },
+  { id: "ex_11", amount: 8000, date: "2026-04-29", category: "accommodation", oshiId: "oshi_sho", memo: "大阪宿泊", createdAt: now, updatedAt: now },
+  { id: "ex_12", amount: 5000, date: "2026-04-29", category: "transport", oshiId: "oshi_sho", memo: "大阪新幹線", createdAt: now, updatedAt: now },
+];
+
+const settings = { monthlyBudget: 50000 };
+
+// localStorage に書き込み
+localStorage.setItem("oshi-schedule-oshi", JSON.stringify(oshi));
+localStorage.setItem("oshi-schedule-events", JSON.stringify(events));
+localStorage.setItem("oshi-schedule-goods", JSON.stringify(goods));
+localStorage.setItem("oshi-schedule-expenses", JSON.stringify(expenses));
+localStorage.setItem("oshi-schedule-settings", JSON.stringify(settings));
+
+console.log("✅ サンプルデータ投入完了！");
+console.log("  推し: " + oshi.length + "人");
+console.log("  イベント: " + events.length + "件");
+console.log("  グッズ: " + goods.length + "件");
+console.log("  出費: " + expenses.length + "件");
+console.log("  月予算: ¥50,000");
+console.log("ページをリロードしてください。");
