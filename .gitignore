@@ -40,3 +40,5 @@ next-env.d.ts
 
 # test files
 test-*.js
+
+.vercel

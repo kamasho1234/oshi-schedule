@@ -7,6 +7,7 @@ import { SeedData } from "@/components/layout/SeedData";
 import { SwipeNavigation } from "@/components/layout/SwipeNavigation";
 import { OnboardingGuide } from "@/components/layout/OnboardingGuide";
 import { RegisterPromptProvider } from "@/components/layout/RegisterPrompt";
+import { AuthInitializer } from "@/components/layout/AuthInitializer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen">
         <RegisterPromptProvider>
+          <AuthInitializer />
           <ThemeInitializer />
           <SeedData />
           <ServiceWorkerRegister />
