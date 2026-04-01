@@ -25,6 +25,10 @@ export const metadata: Metadata = {
     siteName: "推し活スケジュール帳",
     locale: "ja_JP",
     type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  verification: {
+    google: "8YyCmswQ_VONcm1oQv_qJ2rpqKEzYYPhp1kFHmNGWdI",
   },
   twitter: {
     card: "summary_large_image",
