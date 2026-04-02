@@ -57,44 +57,56 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
   const oneWord = getOneWord(data.monthlyExpense);
   const dailyAvg = data.monthlyExpense > 0 ? Math.round(data.monthlyExpense / 30) : 0;
 
-  const downloadImage = async (): Promise<string | null> => {
+  const shareText = `${data.month}の推し活まとめ｜${level.title}\n推し活費: ${fmt(data.monthlyExpense)}\n#推し活 #推し活スケジュール帳\nhttps://my-oshi.com`;
+
+  const getBlob = async () => {
     const blob = await generateImage();
-    if (!blob) return null;
+    if (!blob) throw new Error("画像生成に失敗");
+    return blob;
+  };
+
+  const downloadBlob = (blob: Blob) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "oshi-katsu-summary.png";
     a.click();
-    return url;
+    URL.revokeObjectURL(url);
   };
 
-  const shareText = `${data.month}の推し活まとめ｜${level.title}\n推し活費: ${fmt(data.monthlyExpense)}\n#推し活 #推し活スケジュール帳\nhttps://my-oshi.com`;
-
-  const handleX = async () => {
+  const shareWithImage = async (fallbackUrl?: string) => {
     setSharing(true);
-    await downloadImage();
-    window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`, "_blank");
-    setSharing(false);
+    try {
+      const blob = await getBlob();
+      const file = new File([blob], "oshi-katsu-summary.png", { type: "image/png" });
+
+      // Web Share API対応（スマホ）→ 画像付きで直接共有
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          text: shareText,
+          files: [file],
+        });
+      } else {
+        // PC → 画像ダウンロード + SNS投稿画面を開く
+        downloadBlob(blob);
+        if (fallbackUrl) window.open(fallbackUrl, "_blank");
+      }
+    } catch { /* cancel */ } finally { setSharing(false); }
   };
 
-  const handleLine = async () => {
-    setSharing(true);
-    await downloadImage();
-    window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent("https://my-oshi.com")}&text=${encodeURIComponent(shareText)}`, "_blank");
-    setSharing(false);
-  };
+  const handleX = () => shareWithImage(
+    `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`
+  );
 
-  const handleInstagram = async () => {
-    setSharing(true);
-    await downloadImage();
-    alert("画像をダウンロードしました。Instagramアプリで画像を選択して投稿してください。");
-    setSharing(false);
-  };
+  const handleLine = () => shareWithImage(
+    `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent("https://my-oshi.com")}&text=${encodeURIComponent(shareText)}`
+  );
+
+  const handleInstagram = () => shareWithImage();
 
   const handleDownload = async () => {
     setSharing(true);
-    await downloadImage();
-    setSharing(false);
+    try { downloadBlob(await getBlob()); } catch { /* */ } finally { setSharing(false); }
   };
 
   return (
