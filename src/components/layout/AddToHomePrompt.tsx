@@ -105,11 +105,15 @@ export function AddToHomePrompt() {
                     <div className="flex items-start gap-3">
                       <div className="w-7 h-7 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-sm font-bold shrink-0">1</div>
                       <div>
-                        <p className="text-sm font-bold text-gray-900">画面下の共有ボタンをタップ</p>
+                        <p className="text-sm font-bold text-gray-900">ブラウザの共有・メニューを開く</p>
                         <p className="text-xs text-gray-500 mt-0.5">
-                          Safariの下部にある
+                          画面下部の共有ボタン
                           <svg className="inline w-4 h-4 mx-0.5 -mt-0.5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3v11.25" />
+                          </svg>
+                          またはメニュー
+                          <svg className="inline w-4 h-4 mx-0.5 -mt-0.5" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="12" cy="19" r="2" />
                           </svg>
                           をタップ
                         </p>
@@ -119,7 +123,7 @@ export function AddToHomePrompt() {
                       <div className="w-7 h-7 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-sm font-bold shrink-0">2</div>
                       <div>
                         <p className="text-sm font-bold text-gray-900">「ホーム画面に追加」を選択</p>
-                        <p className="text-xs text-gray-500 mt-0.5">メニューを下にスクロールすると見つかります</p>
+                        <p className="text-xs text-gray-500 mt-0.5">メニューの中からタップしてください</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
