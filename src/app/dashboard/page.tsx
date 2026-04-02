@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useEvents } from "@/hooks/useEvents";
 import { useOshi } from "@/hooks/useOshi";
+import { useGoods } from "@/hooks/useGoods";
+import { useExpenses } from "@/hooks/useExpenses";
 import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
+import { ShareCard } from "@/components/share/ShareCard";
+import { getToday } from "@/lib/utils";
 
 function SkeletonCard() {
   return (
@@ -19,7 +23,26 @@ function SkeletonCard() {
 export default function DashboardPage() {
   const { items: events, loading: eventsLoading } = useEvents();
   const { items: oshiList, loading: oshiLoading } = useOshi();
+  const { items: goodsList } = useGoods();
+  const { items: expenses } = useExpenses();
   const isLoading = eventsLoading || oshiLoading;
+  const [showShare, setShowShare] = useState(false);
+
+  const shareData = useMemo(() => {
+    const now = new Date();
+    const currentMonth = getToday().slice(0, 7);
+    const monthlyExpense = expenses
+      .filter(e => e.date.startsWith(currentMonth))
+      .reduce((sum, e) => sum + e.amount, 0);
+    return {
+      oshiNames: oshiList.map(o => o.name),
+      eventCount: events.filter(e => e.date >= getToday()).length,
+      goodsCount: goodsList.length,
+      monthlyExpense,
+      themeColor: oshiList[0]?.themeColor || "#ec4899",
+      month: `${now.getFullYear()}年${now.getMonth() + 1}月`,
+    };
+  }, [oshiList, events, goodsList, expenses]);
 
 
   // Collect all oshi images for photo wall background
@@ -88,7 +111,12 @@ export default function DashboardPage() {
             <h1 className="text-lg font-bold text-center" style={{ color: "var(--header-text)" }}>
               推し活スケジュール帳
             </h1>
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-end gap-2">
+              <button onClick={() => setShowShare(true)} style={{ color: "var(--header-text)", opacity: 0.8 }}>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                </svg>
+              </button>
               <Link href="/settings" style={{ color: "var(--header-text)", opacity: 0.8 }}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7 7 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a7 7 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a7 7 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a7 7 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
@@ -115,6 +143,10 @@ export default function DashboardPage() {
         </div>
 
       </div>
+
+      {showShare && (
+        <ShareCard data={shareData} onClose={() => setShowShare(false)} />
+      )}
     </div>
   );
 }
