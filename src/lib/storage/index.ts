@@ -1,17 +1,16 @@
 import { LocalStorageAdapter } from "./local-storage";
 import { SupabaseStorageAdapter } from "./supabase-storage";
 import type { IStorageAdapter } from "@/types";
+import { supabase } from "@/lib/supabase";
 
 let localAdapter: IStorageAdapter | null = null;
 let supabaseAdapter: IStorageAdapter | null = null;
 let currentUserId: string | null = null;
 
 export function getStorage(): IStorageAdapter {
-  // ログイン済みユーザーがいる場合はSupabase
   if (currentUserId && supabaseAdapter) {
     return supabaseAdapter;
   }
-  // 未ログインはlocalStorage
   if (!localAdapter) {
     localAdapter = new LocalStorageAdapter();
   }
@@ -30,4 +29,20 @@ export function setSupabaseUser(userId: string | null) {
 
 export function isSupabaseActive(): boolean {
   return currentUserId !== null;
+}
+
+/**
+ * Supabaseセッションからユーザー認証状態を検証
+ * localStorageではなくサーバー側のセッションに基づく
+ */
+export async function verifyAuthState(): Promise<string | null> {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      setSupabaseUser(session.user.id);
+      return session.user.id;
+    }
+  } catch { /* ignore */ }
+  setSupabaseUser(null);
+  return null;
 }

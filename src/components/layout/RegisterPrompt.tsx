@@ -60,7 +60,8 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
       return;
     }
     if (!email || !password) { setError("メールアドレスとパスワードを入力してください"); return; }
-    if (password.length < 6) { setError("パスワードは6文字以上にしてください"); return; }
+    if (password.length < 8) { setError("パスワードは8文字以上にしてください"); return; }
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) { setError("パスワードには英字と数字の両方を含めてください"); return; }
 
     setLoading(true);
     setError("");
@@ -69,8 +70,6 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
         const data = await signUpWithEmail(email, password);
         if (data.user) {
           setSupabaseUser(data.user.id);
-          localStorage.setItem("oshi-schedule-registered", "true");
-          localStorage.setItem("oshi-schedule-user-id", data.user.id);
           setSuccess("登録完了！確認メールを送信しました。");
           setTimeout(() => {
             setIsOpen(false);
@@ -81,17 +80,17 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
         const data = await signInWithEmail(email, password);
         if (data.user) {
           setSupabaseUser(data.user.id);
-          localStorage.setItem("oshi-schedule-registered", "true");
-          localStorage.setItem("oshi-schedule-user-id", data.user.id);
           setIsOpen(false);
           window.location.reload();
         }
       }
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "エラーが発生しました";
-      if (msg.includes("already registered")) setError("このメールアドレスは既に登録されています");
-      else if (msg.includes("Invalid login")) setError("メールアドレスまたはパスワードが正しくありません");
-      else setError(msg);
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.includes("already registered") || msg.includes("already been registered")) setError("このメールアドレスは既に登録されています");
+      else if (msg.includes("Invalid login") || msg.includes("invalid_credentials")) setError("メールアドレスまたはパスワードが正しくありません");
+      else if (msg.includes("weak_password")) setError("パスワードが弱すぎます。英字と数字を含む8文字以上にしてください");
+      else if (msg.includes("rate_limit")) setError("しばらく時間をおいてから再度お試しください");
+      else setError("エラーが発生しました。しばらくしてから再度お試しください");
     } finally {
       setLoading(false);
     }
@@ -160,7 +159,7 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="パスワード（6文字以上）"
+                    placeholder="パスワード（英字+数字で8文字以上）"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
                   />
                 )}

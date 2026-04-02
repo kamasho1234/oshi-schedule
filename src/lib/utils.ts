@@ -66,3 +66,17 @@ export function hexToHsl(hex: string): { h: number; s: number; l: number } {
   else h = ((r - g) / d + 4) / 6;
   return { h: h * 360, s, l };
 }
+
+export function sanitizeUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") return trimmed;
+    return "";
+  } catch {
+    // 相対URLやプロトコルなしの場合
+    if (trimmed.startsWith("/")) return trimmed;
+    return "";
+  }
+}

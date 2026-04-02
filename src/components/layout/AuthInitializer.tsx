@@ -7,12 +7,10 @@ import { syncLocalToSupabase } from "@/lib/sync";
 
 export function AuthInitializer() {
   useEffect(() => {
-    // 起動時にセッション復元
+    // 起動時にセッション復元（サーバー側で検証）
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setSupabaseUser(session.user.id);
-        localStorage.setItem("oshi-schedule-registered", "true");
-        localStorage.setItem("oshi-schedule-user-id", session.user.id);
       }
     });
 
@@ -20,17 +18,12 @@ export function AuthInitializer() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         setSupabaseUser(session.user.id);
-        localStorage.setItem("oshi-schedule-registered", "true");
-        localStorage.setItem("oshi-schedule-user-id", session.user.id);
-
         // 初回ログイン時にlocalStorageデータをSupabaseに同期
         if (event === "SIGNED_IN") {
           syncLocalToSupabase(session.user.id);
         }
       } else {
         setSupabaseUser(null);
-        localStorage.removeItem("oshi-schedule-registered");
-        localStorage.removeItem("oshi-schedule-user-id");
       }
     });
 
