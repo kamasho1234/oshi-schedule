@@ -291,7 +291,7 @@ function HeroSection({ theme, onThemeChange }: { theme: MockThemeId; onThemeChan
         </div>
 
         <div className="mt-6 flex justify-center">
-          <CTAButton>今すぐ始める -- 無料</CTAButton>
+          <CTAButton>推し活、ここから始めよう</CTAButton>
         </div>
       </div>
     </section>
@@ -1093,8 +1093,8 @@ function SafetySection() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       ),
-      title: "完全無料・登録不要",
-      desc: "メールアドレスもパスワードも不要。開いたらすぐ使える",
+      title: "無料で使える",
+      desc: "基本機能はすべて無料。メールまたはGoogleで簡単登録",
     },
     {
       icon: (
@@ -1102,8 +1102,8 @@ function SafetySection() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
         </svg>
       ),
-      title: "データはスマホに保存",
-      desc: "外部送信なし。バックアップ・復元もかんたん",
+      title: "どの端末からでもアクセス",
+      desc: "データはクラウドに安全保存。スマホでもPCでも同期",
     },
     {
       icon: (
@@ -1167,7 +1167,7 @@ function CTAFooter() {
         <p className="text-white/70 text-sm mb-8">
           推しとの毎日を、もっと特別に。
         </p>
-        <CTAButton>今すぐ始める -- 無料</CTAButton>
+        <CTAButton>推し活、ここから始めよう</CTAButton>
         <p className="text-white/50 text-xs mt-4">
           ※ 30秒で始められます
         </p>
