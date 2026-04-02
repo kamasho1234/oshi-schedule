@@ -52,6 +52,11 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
     return new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
   }, []);
 
+  const fmt = (n: number) => "¥" + n.toLocaleString();
+  const level = getOshiLevel(data.monthlyExpense);
+  const oneWord = getOneWord(data.monthlyExpense);
+  const dailyAvg = data.monthlyExpense > 0 ? Math.round(data.monthlyExpense / 30) : 0;
+
   const downloadImage = async (): Promise<string | null> => {
     const blob = await generateImage();
     if (!blob) return null;
@@ -91,11 +96,6 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
     await downloadImage();
     setSharing(false);
   };
-
-  const fmt = (n: number) => "¥" + n.toLocaleString();
-  const level = getOshiLevel(data.monthlyExpense);
-  const oneWord = getOneWord(data.monthlyExpense);
-  const dailyAvg = data.monthlyExpense > 0 ? Math.round(data.monthlyExpense / 30) : 0;
 
   return (
     <>
