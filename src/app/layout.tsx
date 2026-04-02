@@ -8,6 +8,7 @@ import { SwipeNavigation } from "@/components/layout/SwipeNavigation";
 import { OnboardingGuide } from "@/components/layout/OnboardingGuide";
 import { RegisterPromptProvider } from "@/components/layout/RegisterPrompt";
 import { AuthInitializer } from "@/components/layout/AuthInitializer";
+import { AddToHomePrompt } from "@/components/layout/AddToHomePrompt";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -78,6 +79,7 @@ export default function RootLayout({
               {children}
             </SwipeNavigation>
             <BottomNav />
+            <AddToHomePrompt />
           </div>
         </RegisterPromptProvider>
       </body>
