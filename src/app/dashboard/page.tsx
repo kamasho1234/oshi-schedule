@@ -53,9 +53,18 @@ export default function DashboardPage() {
   const shareData = useMemo(() => {
     const now = new Date();
     const currentMonth = getToday().slice(0, 7);
-    const monthlyExpense = expenses
-      .filter(e => e.date.startsWith(currentMonth))
-      .reduce((sum, e) => sum + e.amount, 0);
+    const monthlyExpenses = expenses.filter(e => e.date.startsWith(currentMonth));
+    const monthlyExpense = monthlyExpenses.reduce((sum, e) => sum + e.amount, 0);
+    const totalExpenseAllTime = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+    // 今月いちばん貢いだ推し
+    const expenseByOshi: Record<string, number> = {};
+    for (const e of monthlyExpenses) {
+      if (e.oshiId) expenseByOshi[e.oshiId] = (expenseByOshi[e.oshiId] || 0) + e.amount;
+    }
+    const topOshiId = Object.entries(expenseByOshi).sort(([,a],[,b]) => b - a)[0]?.[0];
+    const topOshi = topOshiId ? oshiList.find(o => o.id === topOshiId) : null;
+
     return {
       oshiNames: oshiList.map(o => o.name),
       eventCount: events.filter(e => e.date >= getToday()).length,
@@ -63,6 +72,10 @@ export default function DashboardPage() {
       monthlyExpense,
       themeColor: oshiList[0]?.themeColor || "#ec4899",
       month: `${now.getFullYear()}年${now.getMonth() + 1}月`,
+      topOshiName: topOshi?.name || "",
+      topOshiExpense: topOshiId ? expenseByOshi[topOshiId] : 0,
+      totalExpenseAllTime,
+      oshiCount: oshiList.length,
     };
   }, [oshiList, events, goodsList, expenses]);
 
