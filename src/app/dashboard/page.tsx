@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { useEvents } from "@/hooks/useEvents";
 import { useOshi } from "@/hooks/useOshi";
@@ -9,6 +9,8 @@ import { useExpenses } from "@/hooks/useExpenses";
 import { UpcomingEvents } from "@/components/dashboard/UpcomingEvents";
 import { ShareCard } from "@/components/share/ShareCard";
 import { getToday } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
+import { signOut } from "@/lib/supabase-auth";
 
 function SkeletonCard() {
   return (
@@ -27,6 +29,26 @@ export default function DashboardPage() {
   const { items: expenses } = useExpenses();
   const isLoading = eventsLoading || oshiLoading;
   const [showShare, setShowShare] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsLoggedIn(!!session?.user);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleAuthAction = async () => {
+    if (isLoggedIn) {
+      await signOut();
+      window.location.reload();
+    } else {
+      window.dispatchEvent(new CustomEvent("oshi-register-prompt"));
+    }
+  };
 
   const shareData = useMemo(() => {
     const now = new Date();
@@ -107,7 +129,33 @@ export default function DashboardPage() {
           style={{ background: "var(--bg-header)" }}
         >
           <div className="max-w-lg mx-auto flex items-center h-10 px-4">
-            <div className="flex-1" />
+            <div className="flex-1 flex justify-start">
+              <button
+                onClick={handleAuthAction}
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold transition-colors"
+                style={{
+                  color: "var(--header-text)",
+                  opacity: 0.85,
+                  backgroundColor: isLoggedIn ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.2)",
+                }}
+              >
+                {isLoggedIn ? (
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                    </svg>
+                    ログアウト
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                    ログイン
+                  </>
+                )}
+              </button>
+            </div>
             <h1 className="text-lg font-bold text-center" style={{ color: "var(--header-text)" }}>
               推し活スケジュール帳
             </h1>
