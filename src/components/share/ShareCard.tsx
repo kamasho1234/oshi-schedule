@@ -74,35 +74,47 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
     URL.revokeObjectURL(url);
   };
 
-  const shareWithImage = async (fallbackUrl?: string) => {
+  const handleX = async () => {
     setSharing(true);
     try {
       const blob = await getBlob();
       const file = new File([blob], "oshi-katsu-summary.png", { type: "image/png" });
-
-      // Web Share API対応（スマホ）→ 画像付きで直接共有
       if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          text: shareText,
-          files: [file],
-        });
+        await navigator.share({ text: shareText, files: [file] });
       } else {
-        // PC → 画像ダウンロード + SNS投稿画面を開く
         downloadBlob(blob);
-        if (fallbackUrl) window.open(fallbackUrl, "_blank");
+        // 同期的にwindow.openを呼ばないとポップアップブロックされるため、先に開く
+        setTimeout(() => {
+          window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`, "_blank");
+        }, 500);
       }
     } catch { /* cancel */ } finally { setSharing(false); }
   };
 
-  const handleX = () => shareWithImage(
-    `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`
-  );
+  const handleLine = async () => {
+    setSharing(true);
+    try {
+      const blob = await getBlob();
+      const file = new File([blob], "oshi-katsu-summary.png", { type: "image/png" });
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({ text: shareText, files: [file] });
+      } else {
+        downloadBlob(blob);
+        setTimeout(() => {
+          window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent("https://my-oshi.com")}&text=${encodeURIComponent(shareText)}`, "_blank");
+        }, 500);
+      }
+    } catch { /* cancel */ } finally { setSharing(false); }
+  };
 
-  const handleLine = () => shareWithImage(
-    `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent("https://my-oshi.com")}&text=${encodeURIComponent(shareText)}`
-  );
-
-  const handleInstagram = () => shareWithImage();
+  const handleInstagram = async () => {
+    setSharing(true);
+    try {
+      const blob = await getBlob();
+      downloadBlob(blob);
+      alert("画像を保存しました。Instagramアプリで画像を選択して投稿してください。\n投稿テキストに https://my-oshi.com を入れてね！");
+    } catch { /* */ } finally { setSharing(false); }
+  };
 
   const handleDownload = async () => {
     setSharing(true);
