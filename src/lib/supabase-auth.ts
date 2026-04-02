@@ -15,6 +15,13 @@ export async function signInWithEmail(email: string, password: string) {
   return data;
 }
 
+export async function resetPassword(email: string) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: typeof window !== "undefined" ? `${window.location.origin}/settings` : "https://my-oshi.com/settings",
+  });
+  if (error) throw error;
+}
+
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;

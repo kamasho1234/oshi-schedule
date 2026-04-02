@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, createContext, useContext, useCallback } from "react";
-import { signUpWithEmail, signInWithEmail, signInWithGoogle } from "@/lib/supabase-auth";
+import { signUpWithEmail, signInWithEmail, signInWithGoogle, resetPassword } from "@/lib/supabase-auth";
 import { setSupabaseUser } from "@/lib/storage";
 
 interface RegisterPromptContextValue {
@@ -18,7 +18,7 @@ export function useRegisterPrompt() {
 
 export function RegisterPromptProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState<"register" | "login">("register");
+  const [mode, setMode] = useState<"register" | "login" | "reset">("register");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -45,6 +45,20 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
   }, []);
 
   const handleSubmit = async () => {
+    if (mode === "reset") {
+      if (!email) { setError("メールアドレスを入力してください"); return; }
+      setLoading(true);
+      setError("");
+      try {
+        await resetPassword(email);
+        setSuccess("パスワードリセットのメールを送信しました。メールのリンクから再設定してください。");
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "エラーが発生しました");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
     if (!email || !password) { setError("メールアドレスとパスワードを入力してください"); return; }
     if (password.length < 6) { setError("パスワードは6文字以上にしてください"); return; }
 
@@ -93,12 +107,14 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
             <div className="bg-white rounded-2xl shadow-2xl p-6">
               <div className="text-center mb-5">
                 <h2 className="text-lg font-bold text-gray-900">
-                  {mode === "register" ? "ユーザー登録" : "ログイン"}
+                  {mode === "register" ? "ユーザー登録" : mode === "login" ? "ログイン" : "パスワードをリセット"}
                 </h2>
                 <p className="text-xs text-gray-500 mt-1">
                   {mode === "register"
                     ? "データを保存するにはユーザー登録が必要です"
-                    : "登録済みのアカウントでログイン"}
+                    : mode === "login"
+                      ? "登録済みのアカウントでログイン"
+                      : "登録したメールアドレスにリセットリンクを送信します"}
                 </p>
               </div>
 
@@ -139,13 +155,15 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
                   placeholder="メールアドレス"
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
                 />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="パスワード（6文字以上）"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
-                />
+                {mode !== "reset" && (
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="パスワード（6文字以上）"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                  />
+                )}
 
                 <button
                   onClick={handleSubmit}
@@ -153,17 +171,36 @@ export function RegisterPromptProvider({ children }: { children: React.ReactNode
                   className="w-full py-3 rounded-xl text-sm font-bold text-white transition-colors disabled:opacity-50"
                   style={{ backgroundColor: "#ec4899" }}
                 >
-                  {loading ? "処理中..." : mode === "register" ? "登録する" : "ログインする"}
+                  {loading ? "処理中..." : mode === "register" ? "登録する" : mode === "login" ? "ログインする" : "リセットメールを送信"}
                 </button>
               </div>
 
-              <div className="mt-4 text-center">
-                <button
-                  onClick={() => { setMode(mode === "register" ? "login" : "register"); setError(""); }}
-                  className="text-xs text-gray-500 hover:text-gray-700"
-                >
-                  {mode === "register" ? "アカウントをお持ちの方はこちら" : "新規登録はこちら"}
-                </button>
+              <div className="mt-4 text-center space-y-1">
+                {mode === "reset" ? (
+                  <button
+                    onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
+                    className="text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    ログインに戻る
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => { setMode(mode === "register" ? "login" : "register"); setError(""); }}
+                      className="text-xs text-gray-500 hover:text-gray-700 block mx-auto"
+                    >
+                      {mode === "register" ? "アカウントをお持ちの方はこちら" : "新規登録はこちら"}
+                    </button>
+                    {mode === "login" && (
+                      <button
+                        onClick={() => { setMode("reset"); setError(""); setSuccess(""); }}
+                        className="text-xs text-pink-400 hover:text-pink-600 block mx-auto"
+                      >
+                        パスワードを忘れた方
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
 
               <button
