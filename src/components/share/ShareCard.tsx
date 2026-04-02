@@ -75,34 +75,37 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
   };
 
   const handleX = async () => {
+    // ユーザークリック直後に同期的にwindow.openを呼ぶ（ポップアップブロック回避）
+    const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    const win = window.open(xUrl, "_blank");
+
+    // 画像も生成してダウンロード（投稿に添付用）
     setSharing(true);
     try {
       const blob = await getBlob();
       const file = new File([blob], "oshi-katsu-summary.png", { type: "image/png" });
       if (navigator.share && navigator.canShare({ files: [file] })) {
+        if (win) win.close();
         await navigator.share({ text: shareText, files: [file] });
       } else {
         downloadBlob(blob);
-        // 同期的にwindow.openを呼ばないとポップアップブロックされるため、先に開く
-        setTimeout(() => {
-          window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`, "_blank");
-        }, 500);
       }
     } catch { /* cancel */ } finally { setSharing(false); }
   };
 
   const handleLine = async () => {
+    const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent("https://my-oshi.com")}&text=${encodeURIComponent(shareText)}`;
+    const win = window.open(lineUrl, "_blank");
+
     setSharing(true);
     try {
       const blob = await getBlob();
       const file = new File([blob], "oshi-katsu-summary.png", { type: "image/png" });
       if (navigator.share && navigator.canShare({ files: [file] })) {
+        if (win) win.close();
         await navigator.share({ text: shareText, files: [file] });
       } else {
         downloadBlob(blob);
-        setTimeout(() => {
-          window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent("https://my-oshi.com")}&text=${encodeURIComponent(shareText)}`, "_blank");
-        }, 500);
       }
     } catch { /* cancel */ } finally { setSharing(false); }
   };
