@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/layout/Header";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Card } from "@/components/ui/Card";
@@ -39,6 +39,7 @@ export default function SettingsPage() {
   const { color, changeTheme, designTheme, changeDesignTheme } = useTheme();
   const [budget, setBudget] = useState("");
   const [budgetSaved, setBudgetSaved] = useState(false);
+  const budgetTimerRef = useRef<ReturnType<typeof setTimeout>>(null);
   const [showExpenseOnHome, setShowExpenseOnHome] = useState(true);
 
   // スケジュール表示
@@ -72,7 +73,8 @@ export default function SettingsPage() {
     const value = budget ? Number(budget) : undefined;
     saveSettings({ ...loadSettings(), monthlyBudget: value });
     setBudgetSaved(true);
-    setTimeout(() => setBudgetSaved(false), 2000);
+    if (budgetTimerRef.current) clearTimeout(budgetTimerRef.current);
+    budgetTimerRef.current = setTimeout(() => setBudgetSaved(false), 2000);
   };
 
   const handleToggleExpense = () => {
@@ -175,7 +177,8 @@ export default function SettingsPage() {
       if (error) throw error;
       setBugDescription("");
       setBugSubmitted(true);
-      setTimeout(() => setBugSubmitted(false), 3000);
+      if (budgetTimerRef.current) clearTimeout(budgetTimerRef.current);
+      budgetTimerRef.current = setTimeout(() => setBugSubmitted(false), 3000);
     } catch {
       alert("送信に失敗しました。時間をおいて再度お試しください。");
     } finally {

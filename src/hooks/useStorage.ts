@@ -21,7 +21,6 @@ export function useCollection<T extends { id: string }>(collection: string) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const storageRef = useRef(getStorage());
-  const hasLoadedRef = useRef(false);
 
   const reload = useCallback(async () => {
     setLoading(true);
@@ -29,7 +28,6 @@ export function useCollection<T extends { id: string }>(collection: string) {
     const data = await storageRef.current.getAll<T>(collection);
     setItems(data);
     setLoading(false);
-    hasLoadedRef.current = true;
   }, [collection]);
 
   // 初回: auth-readyイベントを待ってからロード

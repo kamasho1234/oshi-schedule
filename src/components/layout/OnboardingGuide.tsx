@@ -74,7 +74,8 @@ export function OnboardingGuide() {
     if (typeof window === "undefined") return;
     if (localStorage.getItem(ONBOARDING_KEY)) return;
     if (pathname === "/dashboard" && step === -1) {
-      setTimeout(() => { setStep(0); setVisible(true); }, 800);
+      const t = setTimeout(() => { setStep(0); setVisible(true); }, 800);
+      return () => clearTimeout(t);
     }
   }, [pathname, step]);
 
@@ -84,7 +85,8 @@ export function OnboardingGuide() {
       const s = STEPS[step];
       if (pathname === s.page) {
         setNavigating(false);
-        setTimeout(() => setVisible(true), 400);
+        const t = setTimeout(() => setVisible(true), 400);
+        return () => clearTimeout(t);
       }
     }
   }, [pathname, step, navigating]);
