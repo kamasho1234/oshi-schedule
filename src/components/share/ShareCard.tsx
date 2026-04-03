@@ -70,7 +70,9 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
     color: data.themeColor,
   });
   const shareUrl = `https://my-oshi.com/share?${shareParams.toString()}`;
-  const shareText = `${data.month}の推し活まとめ｜${level.title}\n推し活費: ${fmt(data.monthlyExpense)}\n#推し活 #推し活スケジュール帳`;
+  const shareText = data.monthlyExpense > 0
+    ? `${data.month}の推し活費 ${fmt(data.monthlyExpense)}｜${level.title}\n#推し活 #推し活スケジュール帳`
+    : `推し活スケジュール帳はじめました\n#推し活 #推し活スケジュール帳`;
 
   const getBlob = async () => {
     const blob = await generateImage();
