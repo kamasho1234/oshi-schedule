@@ -11,6 +11,7 @@ import { formatDate, generateId, getNow } from "@/lib/utils";
 import { compressImage } from "@/lib/image";
 import type { Oshi, OshiImage } from "@/types";
 import Link from "next/link";
+import { AuthButton } from "@/components/layout/AuthButton";
 
 /* SNS platform icon components (inline, matching SnsLinkList) */
 const platformIcons: Record<string, React.ReactNode> = {
@@ -185,6 +186,8 @@ export default function OshiDetailPage({
 
       {/* === Top navigation === */}
       <div className="relative z-10 flex items-center justify-between px-4 pt-4">
+        <div className="flex items-center gap-2">
+        <AuthButton compact />
         <button
           onClick={() => router.push("/oshi")}
           className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20"
@@ -193,6 +196,7 @@ export default function OshiDetailPage({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
+        </div>
         <button
           onClick={() => setIsEditOpen(true)}
           className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20"

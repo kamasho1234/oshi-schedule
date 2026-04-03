@@ -7,6 +7,7 @@ import { ExpenseForm } from "@/components/expenses/ExpenseForm";
 import { CategoryBadge } from "@/components/expenses/CategoryBadge";
 import { useExpenses } from "@/hooks/useExpenses";
 import { useOshi } from "@/hooks/useOshi";
+import { AuthButton } from "@/components/layout/AuthButton";
 import { formatDate, formatYen } from "@/lib/utils";
 import { EXPENSE_CATEGORY_LABELS, EXPENSE_CATEGORY_COLORS } from "@/lib/constants";
 import type { Expense, ExpenseCategory } from "@/types";
@@ -166,7 +167,9 @@ function ExpensesContent() {
           style={{ background: "var(--bg-header)" }}
         >
           <div className="max-w-lg mx-auto flex items-center h-10 px-4">
-            <div className="flex-1" />
+            <div className="flex-1 flex justify-start">
+              <AuthButton compact />
+            </div>
             <h1 className="text-lg font-bold text-center" style={{ color: "var(--header-text)" }}>出費管理</h1>
             <div className="flex-1 flex justify-end">
             <button

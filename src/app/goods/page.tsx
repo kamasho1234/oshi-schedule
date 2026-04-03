@@ -8,6 +8,7 @@ import { GoodsGrid } from "@/components/goods/GoodsGrid";
 import { GoodsForm } from "@/components/goods/GoodsForm";
 import { useGoods } from "@/hooks/useGoods";
 import { useOshi } from "@/hooks/useOshi";
+import { AuthButton } from "@/components/layout/AuthButton";
 import type { Goods } from "@/types";
 
 export default function GoodsPage() {
@@ -77,7 +78,9 @@ export default function GoodsPage() {
         {/* Header */}
         <header className="shrink-0 backdrop-blur-md border-b border-white/20" style={{ background: "var(--bg-header)" }}>
           <div className="max-w-lg mx-auto flex items-center h-10 px-4">
-            <div className="flex-1" />
+            <div className="flex-1 flex justify-start">
+              <AuthButton compact />
+            </div>
             <h1 className="text-lg font-bold text-center" style={{ color: "var(--header-text)" }}>グッズコレクション</h1>
             <div className="flex-1 flex justify-end">
               <button onClick={() => setIsAddOpen(true)} className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: "var(--header-accent-bg)" }}>

@@ -8,6 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { useEvents } from "@/hooks/useEvents";
 import { useOshi } from "@/hooks/useOshi";
+import { AuthButton } from "@/components/layout/AuthButton";
 import { getToday } from "@/lib/utils";
 import type { OshiEvent } from "@/types";
 
@@ -136,7 +137,9 @@ export default function CalendarPage() {
           style={{ background: "var(--bg-header)" }}
         >
           <div className="max-w-lg mx-auto flex items-center h-10 px-4">
-            <div className="flex-1" />
+            <div className="flex-1 flex justify-start">
+              <AuthButton compact />
+            </div>
             <h1 className="text-lg font-bold text-center" style={{ color: "var(--header-text)" }}>
               カレンダー
             </h1>
