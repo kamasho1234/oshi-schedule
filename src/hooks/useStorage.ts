@@ -21,11 +21,7 @@ export function useCollection<T extends { id: string }>(collection: string) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const storageRef = useRef(getStorage());
-
-  // storageが切り替わった場合に更新
-  useEffect(() => {
-    storageRef.current = getStorage();
-  });
+  const hasLoadedRef = useRef(false);
 
   const reload = useCallback(async () => {
     setLoading(true);
@@ -33,10 +29,30 @@ export function useCollection<T extends { id: string }>(collection: string) {
     const data = await storageRef.current.getAll<T>(collection);
     setItems(data);
     setLoading(false);
+    hasLoadedRef.current = true;
   }, [collection]);
 
+  // 初回: auth-readyイベントを待ってからロード
   useEffect(() => {
+    const handleAuthReady = () => {
+      reload();
+    };
+
+    const handleStorageChanged = () => {
+      // ストレージが切り替わったらリロード
+      reload();
+    };
+
+    window.addEventListener("oshi-auth-ready", handleAuthReady);
+    window.addEventListener("oshi-storage-changed", handleStorageChanged);
+
+    // auth-readyが既に発火済みの場合に備えて即座にもロード
     reload();
+
+    return () => {
+      window.removeEventListener("oshi-auth-ready", handleAuthReady);
+      window.removeEventListener("oshi-storage-changed", handleStorageChanged);
+    };
   }, [reload]);
 
   const add = useCallback(

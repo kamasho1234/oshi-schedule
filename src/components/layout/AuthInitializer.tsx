@@ -12,6 +12,8 @@ export function AuthInitializer() {
       if (session?.user) {
         setSupabaseUser(session.user.id);
       }
+      // 認証状態が確定したことを全コンポーネントに通知
+      window.dispatchEvent(new CustomEvent("oshi-auth-ready"));
     });
 
     // 認証状態の変化を監視
@@ -25,6 +27,8 @@ export function AuthInitializer() {
       } else {
         setSupabaseUser(null);
       }
+      // ストレージ切替を通知→全useCollectionがリロード
+      window.dispatchEvent(new CustomEvent("oshi-storage-changed"));
     });
 
     return () => subscription.unsubscribe();

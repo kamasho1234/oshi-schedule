@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { ThemeInitializer } from "@/components/layout/ThemeInitializer";
 import { ServiceWorkerRegister } from "@/components/layout/ServiceWorkerRegister";
-import { GlobalBackground } from "@/components/layout/GlobalBackground";
 import { SeedData } from "@/components/layout/SeedData";
 import { SwipeNavigation } from "@/components/layout/SwipeNavigation";
 import { OnboardingGuide } from "@/components/layout/OnboardingGuide";
@@ -72,7 +71,6 @@ export default function RootLayout({
           <ThemeInitializer />
           <SeedData />
           <ServiceWorkerRegister />
-          <GlobalBackground />
           <OnboardingGuide />
           <div className="relative z-10">
             <SwipeNavigation>
