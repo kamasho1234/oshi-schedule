@@ -7,7 +7,7 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 
-const ADMIN_USER_ID = ""; // 後でSupabaseのuser_idを設定
+const ADMIN_USER_ID = "33559995-fc33-490d-a889-61815842f272";
 
 interface BugReport {
   id: string;
