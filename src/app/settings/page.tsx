@@ -11,6 +11,7 @@ import { THEME_PRESETS } from "@/lib/constants";
 import { DESIGN_THEMES } from "@/lib/themes";
 import { getStorage } from "@/lib/storage";
 import { EVENT_CATEGORY_LABELS } from "@/lib/constants";
+import { supabase } from "@/lib/supabase";
 import type { OshiEvent } from "@/types";
 
 const SETTINGS_KEY = "oshi-schedule-settings";
@@ -50,6 +51,12 @@ export default function SettingsPage() {
   const [deleteTo, setDeleteTo] = useState("");
   const [deleteTargetCount, setDeleteTargetCount] = useState<number | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // バグ報告
+  const [bugCategory, setBugCategory] = useState("bug");
+  const [bugDescription, setBugDescription] = useState("");
+  const [bugSubmitting, setBugSubmitting] = useState(false);
+  const [bugSubmitted, setBugSubmitted] = useState(false);
 
   useEffect(() => {
     const settings = loadSettings();
@@ -145,6 +152,35 @@ export default function SettingsPage() {
     setDeleteFrom("");
     setDeleteTo("");
     alert(`${targets.length}件のスケジュールを削除しました`);
+  };
+
+  const handleBugReport = async () => {
+    if (!bugDescription.trim()) {
+      alert("内容を入力してください");
+      return;
+    }
+    setBugSubmitting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        alert("バグ報告にはログインが必要です");
+        return;
+      }
+      const { error } = await supabase.from("bug_reports").insert({
+        user_id: user.id,
+        category: bugCategory,
+        description: bugDescription.trim(),
+        page_url: window.location.href,
+      });
+      if (error) throw error;
+      setBugDescription("");
+      setBugSubmitted(true);
+      setTimeout(() => setBugSubmitted(false), 3000);
+    } catch {
+      alert("送信に失敗しました。時間をおいて再度お試しください。");
+    } finally {
+      setBugSubmitting(false);
+    }
   };
 
   return (
@@ -418,19 +454,44 @@ export default function SettingsPage() {
             </button>
           </Card>
 
-          {/* アプリ情報 */}
+          {/* バグ報告 */}
           <Card>
-            <h2 className="text-base font-bold text-heading mb-3">アプリ情報</h2>
-            <dl className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <dt className="text-sub">アプリ名</dt>
-                <dd className="text-heading font-medium">推し活スケジュール帳</dd>
+            <h2 className="text-base font-bold text-heading mb-3">バグ・要望を報告</h2>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-sub">種類</label>
+                <select
+                  value={bugCategory}
+                  onChange={(e) => setBugCategory(e.target.value)}
+                  className="w-full radius-input border border-input bg-input px-3 py-2 text-sm text-body focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] focus:outline-none transition-colors"
+                >
+                  <option value="bug">バグ・不具合</option>
+                  <option value="feature">機能リクエスト</option>
+                  <option value="ui">デザイン・表示の問題</option>
+                  <option value="other">その他</option>
+                </select>
               </div>
-              <div className="flex justify-between">
-                <dt className="text-sub">バージョン</dt>
-                <dd className="text-heading font-medium">0.1.0</dd>
+              <div className="space-y-1">
+                <label className="block text-xs font-medium text-sub">内容</label>
+                <textarea
+                  value={bugDescription}
+                  onChange={(e) => setBugDescription(e.target.value)}
+                  placeholder="どんな問題が起きましたか？&#10;どんな機能が欲しいですか？"
+                  rows={4}
+                  className="w-full radius-input border border-input bg-input px-3 py-2 text-sm text-body placeholder:text-dim focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] focus:outline-none transition-colors resize-none"
+                />
               </div>
-            </dl>
+              <Button
+                onClick={handleBugReport}
+                disabled={bugSubmitting}
+                className="w-full"
+              >
+                {bugSubmitting ? "送信中..." : "送信する"}
+              </Button>
+              {bugSubmitted && (
+                <p className="text-sm text-green-600 text-center">ありがとうございます！報告を受け付けました。</p>
+              )}
+            </div>
           </Card>
         </div>
       </PageContainer>
