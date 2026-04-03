@@ -57,7 +57,20 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
   const oneWord = getOneWord(data.monthlyExpense);
   const dailyAvg = data.monthlyExpense > 0 ? Math.round(data.monthlyExpense / 30) : 0;
 
-  const shareText = `${data.month}の推し活まとめ｜${level.title}\n推し活費: ${fmt(data.monthlyExpense)}\n#推し活 #推し活スケジュール帳\nhttps://my-oshi.com`;
+  // シェア用URL（Xカード表示用）
+  const shareParams = new URLSearchParams({
+    month: data.month,
+    expense: String(data.monthlyExpense),
+    oshiCount: String(data.oshiCount),
+    eventCount: String(data.eventCount),
+    goodsCount: String(data.goodsCount),
+    topOshi: data.topOshiName,
+    topExpense: String(data.topOshiExpense),
+    names: data.oshiNames.join(","),
+    color: data.themeColor,
+  });
+  const shareUrl = `https://my-oshi.com/share?${shareParams.toString()}`;
+  const shareText = `${data.month}の推し活まとめ｜${level.title}\n推し活費: ${fmt(data.monthlyExpense)}\n#推し活 #推し活スケジュール帳`;
 
   const getBlob = async () => {
     const blob = await generateImage();
@@ -76,7 +89,7 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
 
   const handleX = async () => {
     // ユーザークリック直後に同期的にwindow.openを呼ぶ（ポップアップブロック回避）
-    const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    const xUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
     const win = window.open(xUrl, "_blank");
 
     // 画像も生成してダウンロード（投稿に添付用）
@@ -94,7 +107,7 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
   };
 
   const handleLine = async () => {
-    const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent("https://my-oshi.com")}&text=${encodeURIComponent(shareText)}`;
+    const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
     const win = window.open(lineUrl, "_blank");
 
     setSharing(true);
