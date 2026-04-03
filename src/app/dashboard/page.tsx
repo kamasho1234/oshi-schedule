@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useEvents } from "@/hooks/useEvents";
 import { useOshi } from "@/hooks/useOshi";
@@ -30,6 +30,8 @@ export default function DashboardPage() {
   const isLoading = eventsLoading || oshiLoading;
   const [showShare, setShowShare] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -41,13 +43,24 @@ export default function DashboardPage() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleAuthAction = async () => {
-    if (isLoggedIn) {
-      await signOut();
-      window.location.reload();
-    } else {
-      window.dispatchEvent(new CustomEvent("oshi-register-prompt"));
-    }
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+    if (showUserMenu) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showUserMenu]);
+
+  const handleLogin = () => {
+    window.dispatchEvent(new CustomEvent("oshi-register-prompt"));
+  };
+
+  const handleLogout = async () => {
+    setShowUserMenu(false);
+    await signOut();
+    window.location.reload();
   };
 
   const shareData = useMemo(() => {
@@ -143,31 +156,48 @@ export default function DashboardPage() {
         >
           <div className="max-w-lg mx-auto flex items-center h-10 px-4">
             <div className="flex-1 flex justify-start">
-              <button
-                onClick={handleAuthAction}
-                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold transition-colors"
-                style={{
-                  color: "var(--header-text)",
-                  opacity: 0.85,
-                  backgroundColor: isLoggedIn ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.2)",
-                }}
-              >
-                {isLoggedIn ? (
-                  <>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                    </svg>
-                    ログアウト
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              {isLoggedIn ? (
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+                    style={{ backgroundColor: "rgba(255,255,255,0.25)", color: "var(--header-text)" }}
+                    aria-label="ユーザーメニュー"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
-                    ログイン
-                  </>
-                )}
-              </button>
+                  </button>
+                  {showUserMenu && (
+                    <div className="absolute left-0 top-9 w-36 bg-card rounded-xl shadow-lg border border-card overflow-hidden z-50">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-3 text-sm text-left text-body hover:bg-black/5 transition-colors flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4 text-sub" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                        ログアウト
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={handleLogin}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold transition-colors"
+                  style={{
+                    color: "var(--header-text)",
+                    opacity: 0.85,
+                    backgroundColor: "rgba(255,255,255,0.2)",
+                  }}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                  ログイン
+                </button>
+              )}
             </div>
             <h1 className="text-lg font-bold text-center" style={{ color: "var(--header-text)" }}>
               推し活スケジュール帳
