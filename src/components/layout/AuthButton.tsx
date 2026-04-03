@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/lib/supabase";
 import { signOut } from "@/lib/supabase-auth";
 
@@ -13,7 +14,11 @@ export function AuthButton({ compact }: AuthButtonProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     const updateUser = (session: { user: { id: string; user_metadata?: Record<string, unknown> } } | null) => {
@@ -29,7 +34,8 @@ export function AuthButton({ compact }: AuthButtonProps) {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (menuRef.current && !menuRef.current.contains(target) && btnRef.current && !btnRef.current.contains(target)) {
         setShowMenu(false);
       }
     };
@@ -52,8 +58,9 @@ export function AuthButton({ compact }: AuthButtonProps) {
 
   if (isLoggedIn) {
     return (
-      <div className="relative" ref={menuRef}>
+      <>
         <button
+          ref={btnRef}
           onClick={() => setShowMenu(!showMenu)}
           className={`${size} rounded-full flex items-center justify-center transition-colors overflow-hidden`}
           style={avatarUrl ? undefined : { backgroundColor: "var(--color-primary)", color: "#fff" }}
@@ -67,20 +74,26 @@ export function AuthButton({ compact }: AuthButtonProps) {
             </svg>
           )}
         </button>
-        {showMenu && (
-          <div className="fixed left-4 top-12 w-36 bg-card rounded-xl shadow-lg border border-card overflow-hidden z-[9999]">
+        {showMenu && mounted && createPortal(
+          <div
+            ref={menuRef}
+            className="fixed left-4 top-12 w-36 rounded-xl shadow-lg overflow-hidden"
+            style={{ zIndex: 99999, backgroundColor: "var(--bg-card, #fff)", border: "1px solid var(--border-card, #e5e7eb)" }}
+          >
             <button
               onClick={handleLogout}
-              className="w-full px-4 py-3 text-sm text-left text-body hover:bg-black/5 transition-colors flex items-center gap-2"
+              className="w-full px-4 py-3 text-sm text-left hover:bg-black/5 transition-colors flex items-center gap-2"
+              style={{ color: "var(--text-body, #333)" }}
             >
-              <svg className="w-4 h-4 text-sub" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <svg className="w-4 h-4 opacity-50" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
               </svg>
               ログアウト
             </button>
-          </div>
+          </div>,
+          document.body
         )}
-      </div>
+      </>
     );
   }
 
