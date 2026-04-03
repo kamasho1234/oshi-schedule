@@ -44,17 +44,15 @@ export default function GoodsPage() {
     <div className="h-[100dvh] relative flex flex-col overflow-hidden pb-20">
       {/* Photo wall background */}
       {allImages.length > 0 && (
-        <div className="fixed inset-0 opacity-80 z-0 overflow-hidden"><div className="grid grid-cols-3 gap-0" style={{ minHeight: "200vh" }}>
-          {allImages.concat(allImages).concat(allImages).concat(allImages).concat(allImages).concat(allImages).slice(0, 60).map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt=""
-              className="w-full block"
-              style={{ objectFit: "cover" }}
-              draggable={false}
-            />
-          ))}
+        <div className="fixed inset-0 opacity-80 z-0 overflow-hidden">
+          <div className="grid grid-cols-3 gap-0" style={{ minHeight: "200vh" }}>
+            {(() => {
+              const tiles: string[] = [];
+              while (tiles.length < 60) tiles.push(...allImages);
+              return tiles.slice(0, 60).map((src, i) => (
+                <img key={i} src={src} alt="" className="w-full block aspect-square object-cover" draggable={false} />
+              ));
+            })()}
           </div>
         </div>
       )}

@@ -90,7 +90,7 @@ export default function DashboardPage() {
                   key={i}
                   src={src}
                   alt=""
-                  className="w-full block"
+                  className="w-full block aspect-square object-cover"
                   draggable={false}
                 />
               ));

@@ -39,7 +39,7 @@ export default function OshiListPage() {
               const tiles: string[] = [];
               while (tiles.length < 60) tiles.push(...allImages);
               return tiles.slice(0, 60).map((src, i) => (
-                <img key={i} src={src} alt="" className="w-full block" draggable={false} />
+                <img key={i} src={src} alt="" className="w-full block aspect-square object-cover" draggable={false} />
               ));
             })()}
           </div>
