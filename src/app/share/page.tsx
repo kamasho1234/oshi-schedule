@@ -43,7 +43,7 @@ export async function generateMetadata({ searchParams }: SharePageProps): Promis
   if (sp.names) ogParams.set("names", sp.names);
   if (sp.color) ogParams.set("color", sp.color);
 
-  const ogImageUrl = `https://my-oshi.com/api/og?${ogParams.toString()}`;
+  const ogImageUrl = `https://my-oshi.com/og?${ogParams.toString()}`;
 
   return {
     title,
