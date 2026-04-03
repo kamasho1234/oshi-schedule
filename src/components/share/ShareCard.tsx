@@ -57,19 +57,20 @@ export function ShareCard({ data, onClose }: ShareCardProps) {
   const oneWord = getOneWord(data.monthlyExpense);
   const dailyAvg = data.monthlyExpense > 0 ? Math.round(data.monthlyExpense / 30) : 0;
 
-  // シェア用URL（Xカード表示用）
-  const shareParams = new URLSearchParams({
-    month: data.month,
-    expense: String(data.monthlyExpense),
-    oshiCount: String(data.oshiCount),
-    eventCount: String(data.eventCount),
-    goodsCount: String(data.goodsCount),
-    topOshi: data.topOshiName,
-    topExpense: String(data.topOshiExpense),
-    names: data.oshiNames.join(","),
-    color: data.themeColor,
+  // シェア用URL（データをBase64圧縮）
+  const shareData = JSON.stringify({
+    m: data.month,
+    e: data.monthlyExpense,
+    o: data.oshiCount,
+    v: data.eventCount,
+    g: data.goodsCount,
+    t: data.topOshiName,
+    x: data.topOshiExpense,
+    n: data.oshiNames.join(","),
+    c: data.themeColor,
   });
-  const shareUrl = `https://my-oshi.com/share?${shareParams.toString()}`;
+  const encoded = typeof btoa !== "undefined" ? btoa(unescape(encodeURIComponent(shareData))) : "";
+  const shareUrl = `https://my-oshi.com/share?d=${encodeURIComponent(encoded)}`;
   const shareText = data.monthlyExpense > 0
     ? `${data.month}の推し活費 ${fmt(data.monthlyExpense)}｜${level.title}\n#推し活 #推し活スケジュール帳`
     : `推し活スケジュール帳はじめました\n#推し活 #推し活スケジュール帳`;
