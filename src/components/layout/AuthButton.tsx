@@ -68,7 +68,7 @@ export function AuthButton({ compact }: AuthButtonProps) {
           )}
         </button>
         {showMenu && (
-          <div className="absolute left-0 top-10 w-36 bg-card rounded-xl shadow-lg border border-card overflow-hidden z-50">
+          <div className="fixed left-4 top-12 w-36 bg-card rounded-xl shadow-lg border border-card overflow-hidden z-[9999]">
             <button
               onClick={handleLogout}
               className="w-full px-4 py-3 text-sm text-left text-body hover:bg-black/5 transition-colors flex items-center gap-2"
